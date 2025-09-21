@@ -940,6 +940,7 @@ public class BestPracticesDemo extends CollectionDemo {
         
         // LRU Cache implementation
         class LRUCache<K, V> extends LinkedHashMap<K, V> {
+            private static final long serialVersionUID = 1L;
             private final int maxSize;
             
             public LRUCache(int maxSize) {

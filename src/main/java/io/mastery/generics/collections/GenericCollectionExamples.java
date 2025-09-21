@@ -32,6 +32,7 @@ public class GenericCollectionExamples {
      * @return new ArrayList containing elements
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> List<T> listOf(T... elements) {
         return new ArrayList<>(Arrays.asList(elements));
     }
@@ -44,6 +45,7 @@ public class GenericCollectionExamples {
      * @return new HashSet containing elements
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> Set<T> setOf(T... elements) {
         return new LinkedHashSet<>(Arrays.asList(elements));
     }

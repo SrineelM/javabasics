@@ -474,7 +474,7 @@ public class FunctionalProgrammingDemo extends CollectionDemo {
         printBenchmark("Sequential expensive computation", sequentialTime);
         printBenchmark("Parallel expensive computation", parallelTime);
         
-        double speedup = (double) sequentialTime / parallelTime;
+        double speedup = sequentialTime / parallelTime;
         printResult("Speedup factor", String.format("%.2fx", speedup));
         
         // Demonstrate when parallel streams don't help
@@ -539,10 +539,10 @@ public class FunctionalProgrammingDemo extends CollectionDemo {
     
     // Helper method for CPU-intensive computation
     private long expensiveComputation(int n) {
-        long result = 0;
-        for (int i = 0; i < 1000; i++) {
-            result += Math.sqrt(n * i);
-        }
+                long result = 0;
+                for (int i = 0; i < 1000; i++) {
+                        result += (long) Math.sqrt(n * i);
+                }
         return result;
     }
     

@@ -277,7 +277,7 @@ public class ConcurrencyPitfallsDemo {
             }
             // Check contention statistics
             for (Thread t : threads) {
-                ThreadInfo info = threadMXBean.getThreadInfo(t.getId());
+                ThreadInfo info = threadMXBean.getThreadInfo(t.threadId());
                 if (info != null) {
                     System.out.printf("Thread %s: Blocked count: %d, Blocked time: %d ms%n",
                             info.getThreadName(), info.getBlockedCount(), info.getBlockedTime());

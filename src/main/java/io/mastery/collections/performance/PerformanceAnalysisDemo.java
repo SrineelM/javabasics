@@ -357,7 +357,7 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         System.out.printf("  Without initial capacity: %s%n", formatTime(timeWithoutCapacity));
         System.out.printf("  With initial capacity: %s%n", formatTime(timeWithCapacity));
-        System.out.printf("  Improvement: %.2fx%n", (double) timeWithoutCapacity / timeWithCapacity);
+    System.out.printf("  Improvement: %.2fx%n", timeWithoutCapacity / timeWithCapacity);
     }
 
     /**
@@ -384,7 +384,7 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         System.out.printf("  Individual add operations: %s%n", formatTime(individualTime));
         System.out.printf("  Bulk addAll operation: %s%n", formatTime(bulkTime));
-        System.out.printf("  Improvement: %.2fx%n", (double) individualTime / bulkTime);
+    System.out.printf("  Improvement: %.2fx%n", individualTime / bulkTime);
     }
 
     /**
@@ -415,7 +415,7 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         System.out.printf("  ArrayList contains (1000 ops): %s%n", formatTime(listContainsTime));
         System.out.printf("  HashSet contains (1000 ops): %s%n", formatTime(setContainsTime));
-        System.out.printf("  HashSet is %.2fx faster%n", (double) listContainsTime / setContainsTime);
+    System.out.printf("  HashSet is %.2fx faster%n", listContainsTime / setContainsTime);
     }
 
     /**

@@ -110,6 +110,7 @@ public final class GenericMethods {
      * @return a new List containing the elements
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> List<T> listOf(T... elements) {
         return new ArrayList<>(Arrays.asList(elements));
     }
@@ -122,6 +123,7 @@ public final class GenericMethods {
      * @return a new Set containing the elements
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> Set<T> setOf(T... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
@@ -134,6 +136,7 @@ public final class GenericMethods {
      * @return an immutable List
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> List<T> immutableListOf(T... elements) {
         return Collections.unmodifiableList(Arrays.asList(elements));
     }

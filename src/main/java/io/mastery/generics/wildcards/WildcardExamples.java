@@ -508,7 +508,6 @@ public class WildcardExamples {
          * @param animals collection that can hold animals
          * @param newAnimals animals to add
          */
-        @SafeVarargs
         public static void addAnimals(Collection<? super Animal> animals, Animal... newAnimals) {
             for (Animal animal : newAnimals) {
                 animals.add(animal);

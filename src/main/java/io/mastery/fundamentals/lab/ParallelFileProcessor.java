@@ -567,7 +567,7 @@ public class ParallelFileProcessor {
             
             // Calculate additional metrics for comprehensive analysis
             long lineCount = content.lines().count();
-            int uniqueWordCount = (int) content.toLowerCase()
+            int uniqueWordCount = content.toLowerCase()
                 .split("\\s+")
                 .length; // Simplified unique count for demo
             
