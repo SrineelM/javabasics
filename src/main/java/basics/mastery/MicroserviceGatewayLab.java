@@ -1,5 +1,4 @@
-package basics.mastery.advanced;;
-
+package basics.mastery.advanced;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;

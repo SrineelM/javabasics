@@ -1,5 +1,4 @@
-package basics.mastery.advanced;;
-
+package basics.mastery.advanced;
 /**
  * Simple Counter Service Benchmark
  * 

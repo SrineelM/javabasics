@@ -1,5 +1,4 @@
-package basics.mastery.advanced;;
-
+package basics.mastery.advanced;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
