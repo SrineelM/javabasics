@@ -1,4 +1,4 @@
-package basics.mastery.advanced;.modern;
+package basics.mastery.modern;
 
 /**
  * VirtualThreadPinningDemo

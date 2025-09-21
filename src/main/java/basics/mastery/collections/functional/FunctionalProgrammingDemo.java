@@ -1,14 +1,33 @@
-package basics.mastery.advanced;.collections.functional;
+package basics.mastery.collections.functional;
 
-import io.mastery.collections.CollectionDemo;
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of functional programming with Java Collections.
@@ -20,7 +39,7 @@ import java.time.Month;
  * - Custom collectors and advanced stream patterns
  * - Functional interfaces and method references
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

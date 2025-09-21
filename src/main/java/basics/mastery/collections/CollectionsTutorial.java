@@ -1,11 +1,14 @@
-package basics.mastery.advanced;.collections;
+package basics.mastery.collections;
 
-import io.mastery.collections.fundamentals.*;
-import io.mastery.collections.concurrent.*;
-import io.mastery.collections.functional.*;
-import io.mastery.collections.modern.*;
-import io.mastery.collections.performance.*;
-import io.mastery.collections.patterns.*;
+import basics.mastery.collections.fundamentals.ListCollectionsDemo;
+import basics.mastery.collections.fundamentals.SetCollectionsDemo;
+import basics.mastery.collections.fundamentals.MapCollectionsDemo;
+import basics.mastery.collections.fundamentals.QueueCollectionsDemo;
+import basics.mastery.collections.concurrent.ConcurrentCollectionsDemo;
+import basics.mastery.collections.functional.FunctionalProgrammingDemo;
+import basics.mastery.collections.modern.ModernJavaFeaturesDemo;
+import basics.mastery.collections.performance.PerformanceAnalysisDemo;
+import basics.mastery.collections.patterns.BestPracticesDemo;
 
 import java.util.Scanner;
 
@@ -27,7 +30,7 @@ import java.util.Scanner;
  * Note: This runs alongside the existing concurrency tutorial
  * in the same project without interference.
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */
@@ -141,7 +144,7 @@ public class CollectionsTutorial {
         System.out.println("╚" + "═".repeat(60) + "╝");
         System.out.println();
         System.out.println("💡 You can also explore the concurrency examples in this project!");
-        System.out.println("   Run: java io.mastery.MainApplication");
+        System.out.println("   Run: java basics.mastery.MainApplication");
         System.out.println();
     }
 }

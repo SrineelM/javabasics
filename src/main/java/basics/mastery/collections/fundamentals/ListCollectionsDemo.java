@@ -1,9 +1,18 @@
-package basics.mastery.advanced;.collections.fundamentals;
+package basics.mastery.collections.fundamentals;
 
-import io.mastery.collections.CollectionDemo;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Stack;
+import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of List collection implementations.
@@ -15,7 +24,7 @@ import java.util.stream.IntStream;
  * - Stack: LIFO data structure (legacy, modern alternatives shown)
  * - CopyOnWriteArrayList: Thread-safe list for read-heavy scenarios
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

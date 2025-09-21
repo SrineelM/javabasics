@@ -1,13 +1,17 @@
-package basics.mastery.advanced;.java.collections;
-
-import io.mastery.java.collections.fundamentals.*;
-import io.mastery.java.collections.concurrent.*;
-import io.mastery.java.collections.functional.*;
-import io.mastery.java.collections.modern.*;
-import io.mastery.java.collections.performance.*;
-import io.mastery.java.collections.patterns.*;
+package basics.mastery.java.collections;
 
 import java.util.Scanner;
+
+import basics.mastery.java.collections.concurrent.ConcurrentCollectionsDemo;
+import basics.mastery.java.collections.concurrent.MultithreadingExamplesDemo;
+import basics.mastery.java.collections.functional.FunctionalProgrammingDemo;
+import basics.mastery.java.collections.fundamentals.ListCollectionsDemo;
+import basics.mastery.java.collections.fundamentals.MapCollectionsDemo;
+import basics.mastery.java.collections.fundamentals.QueueCollectionsDemo;
+import basics.mastery.java.collections.fundamentals.SetCollectionsDemo;
+import basics.mastery.java.collections.modern.ModernJavaFeaturesDemo;
+import basics.mastery.java.collections.patterns.BestPracticesDemo;
+import basics.mastery.java.collections.performance.PerformanceAnalysisDemo;
 
 /**
  * Java Collections Master Tutorial
@@ -25,7 +29,7 @@ import java.util.Scanner;
  * - Best practices and design patterns
  * - Real-world scenarios and use cases
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

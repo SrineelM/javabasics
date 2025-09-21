@@ -1,4 +1,4 @@
-package basics.mastery.advanced;.generics.fundamentals;
+package basics.mastery.generics.fundamentals;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @param <A> the type of the first element
  * @param <B> the type of the second element
  * @param <C> the type of the third element
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public final class Triple<A, B, C> {

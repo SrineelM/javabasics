@@ -1,11 +1,11 @@
-package basics.mastery.advanced;.java.collections.fundamentals;
+package basics.mastery.java.collections.fundamentals;
 
-import io.mastery.java.collections.CollectionDemo;
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Map collection implementations.
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

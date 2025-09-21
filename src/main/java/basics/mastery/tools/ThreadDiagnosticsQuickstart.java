@@ -1,4 +1,4 @@
-package basics.mastery.advanced;.tools;
+package basics.mastery.tools;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;

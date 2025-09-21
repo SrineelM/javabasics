@@ -1,6 +1,8 @@
-package basics.mastery.advanced;.collections.patterns;
+package basics.mastery.collections.patterns;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

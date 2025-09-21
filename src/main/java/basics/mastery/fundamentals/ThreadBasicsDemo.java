@@ -1,4 +1,20 @@
-package basics.mastery.advanced;.fundamentals;
+package basics.mastery.fundamentals;
+
+/**
+ * ThreadBasicsDemo
+ *
+ * Beginner-friendly walkthrough of Java thread fundamentals:
+ * - Creating threads (Thread, Runnable, ExecutorService)
+ * - Thread lifecycle: NEW -> RUNNABLE -> TIMED_WAITING -> TERMINATED
+ * - start() vs run()
+ * - join(), interrupt(), and sleep()
+ * - CPU-bound vs IO-bound tasks
+ *
+ * This file is additive and does not modify existing project logic.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
 
 /**
  * ThreadBasicsDemo

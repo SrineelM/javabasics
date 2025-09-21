@@ -1,4 +1,15 @@
-package basics.mastery.advanced;
+package basics.mastery;
+
+/**
+ * Main Application for Java Concurrency Training Program
+ *
+ * This is the entry point for exploring various concurrency concepts and demonstrations.
+ * The program provides an interactive menu to access different modules covering
+ * everything from basic threading to modern Java concurrency features.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +52,7 @@ public class MainApplication {
                         System.out.println("🔒 Synchronization Primitives");
                         System.out.println("Launching Synchronization Primitives Demo...");
                         try {
-                            io.mastery.synchronization.SynchronizationPrimitivesDemo.main(new String[]{});
+                            basics.mastery.synchronization.SynchronizationPrimitivesDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -51,7 +62,7 @@ public class MainApplication {
                         System.out.println("📁 Parallel File Processing Lab");
                         System.out.println("Launching Parallel File Processing Lab...");
                         try {
-                            io.mastery.fundamentals.lab.ParallelFileProcessor.main(new String[]{});
+                            basics.mastery.fundamentals.lab.ParallelFileProcessor.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Lab class not found: " + e.getMessage());
                         }
@@ -61,7 +72,7 @@ public class MainApplication {
                         System.out.println("🚀 Modern Concurrency (Java 21)");
                         System.out.println("Launching Modern Concurrency Demo...");
                         try {
-                            io.mastery.modern.ModernConcurrencyDemo.main(new String[]{});
+                            basics.mastery.modern.ModernConcurrencyDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -71,7 +82,7 @@ public class MainApplication {
                         System.out.println("⚡ Microservice Gateway Lab");
                         System.out.println("Launching Microservice Gateway Lab...");
                         try {
-                            io.mastery.MicroserviceGatewayLab.main(new String[]{});
+                            basics.mastery.MicroserviceGatewayLab.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Lab class not found: " + e.getMessage());
                         }
@@ -81,7 +92,7 @@ public class MainApplication {
                         System.out.println("📊 Memory Model Demo");
                         System.out.println("Launching Java Memory Model Demo...");
                         try {
-                            io.mastery.JavaMemoryModelDemo.main(new String[]{});
+                            basics.mastery.JavaMemoryModelDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -91,7 +102,7 @@ public class MainApplication {
                         System.out.println("🔍 Concurrency Pitfalls Demo");
                         System.out.println("Launching Concurrency Pitfalls Demo...");
                         try {
-                            io.mastery.ConcurrencyPitfallsDemo.main(new String[]{});
+                            basics.mastery.ConcurrencyPitfallsDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -101,7 +112,7 @@ public class MainApplication {
                         System.out.println("⚙️ Counter Service Benchmark");
                         System.out.println("Launching Counter Service Benchmark...");
                         try {
-                            io.mastery.CounterServiceBenchmark.main(new String[]{});
+                            basics.mastery.CounterServiceBenchmark.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Benchmark class not found: " + e.getMessage());
                         }
@@ -110,7 +121,7 @@ public class MainApplication {
                         System.out.println("🧵 Thread Basics Demo");
                         System.out.println("Launching Thread Basics Demo...");
                         try {
-                            io.mastery.fundamentals.ThreadBasicsDemo.main(new String[]{});
+                            basics.mastery.fundamentals.ThreadBasicsDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -119,7 +130,7 @@ public class MainApplication {
                         System.out.println("🪶 Virtual Thread Pinning Demo");
                         System.out.println("Launching Virtual Thread Pinning Demo...");
                         try {
-                            io.mastery.modern.VirtualThreadPinningDemo.main(new String[]{});
+                            basics.mastery.modern.VirtualThreadPinningDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -128,7 +139,7 @@ public class MainApplication {
                         System.out.println("🧩 Fail-Fast vs Fail-Safe Iteration");
                         System.out.println("Launching Fail-Safe Iteration Demo...");
                         try {
-                            io.mastery.collections.patterns.FailSafeIterationDemo.main(new String[]{});
+                            basics.mastery.collections.patterns.FailSafeIterationDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -137,7 +148,7 @@ public class MainApplication {
                         System.out.println("#️⃣ Hashing & Comparator Pitfalls");
                         System.out.println("Launching Hashing Pitfalls Demo...");
                         try {
-                            io.mastery.collections.fundamentals.HashingPitfallsDemo.main(new String[]{});
+                            basics.mastery.collections.fundamentals.HashingPitfallsDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -146,7 +157,7 @@ public class MainApplication {
                         System.out.println("🧠 Generics PECS & Variance");
                         System.out.println("Launching Generics PECS Demo...");
                         try {
-                            io.mastery.generics.advanced.GenericsPecosDemo.main(new String[]{});
+                            basics.mastery.generics.advanced.GenericsPecosDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -155,7 +166,7 @@ public class MainApplication {
                         System.out.println("⚙️ Lock-Free Counter (CAS)");
                         System.out.println("Launching Lock-Free Counter Demo...");
                         try {
-                            io.mastery.advanced.LockFreeCounterDemo.main(new String[]{});
+                            basics.mastery.advanced.LockFreeCounterDemo.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Demo class not found: " + e.getMessage());
                         }
@@ -164,7 +175,7 @@ public class MainApplication {
                         System.out.println("🔎 Thread Diagnostics Quickstart");
                         System.out.println("Launching Thread Diagnostics...");
                         try {
-                            io.mastery.tools.ThreadDiagnosticsQuickstart.main(new String[]{});
+                            basics.mastery.tools.ThreadDiagnosticsQuickstart.main(new String[]{});
                         } catch (Exception e) {
                             System.out.println("Tool class not found: " + e.getMessage());
                         }
@@ -260,13 +271,13 @@ public class MainApplication {
                 int c = Integer.parseInt(line);
                 // Reuse existing handler by simulating main switch
                 switch (c) {
-                    case 9 -> io.mastery.fundamentals.ThreadBasicsDemo.main(new String[]{});
-                    case 10 -> io.mastery.modern.VirtualThreadPinningDemo.main(new String[]{});
-                    case 11 -> io.mastery.collections.patterns.FailSafeIterationDemo.main(new String[]{});
-                    case 12 -> io.mastery.collections.fundamentals.HashingPitfallsDemo.main(new String[]{});
-                    case 13 -> io.mastery.generics.advanced.GenericsPecosDemo.main(new String[]{});
-                    case 14 -> io.mastery.advanced.LockFreeCounterDemo.main(new String[]{});
-                    case 15 -> io.mastery.tools.ThreadDiagnosticsQuickstart.main(new String[]{});
+                    case 9 -> basics.mastery.fundamentals.ThreadBasicsDemo.main(new String[]{});
+                    case 10 -> basics.mastery.modern.VirtualThreadPinningDemo.main(new String[]{});
+                    case 11 -> basics.mastery.collections.patterns.FailSafeIterationDemo.main(new String[]{});
+                    case 12 -> basics.mastery.collections.fundamentals.HashingPitfallsDemo.main(new String[]{});
+                    case 13 -> basics.mastery.generics.advanced.GenericsPecosDemo.main(new String[]{});
+                    case 14 -> basics.mastery.advanced.LockFreeCounterDemo.main(new String[]{});
+                    case 15 -> basics.mastery.tools.ThreadDiagnosticsQuickstart.main(new String[]{});
                     default -> System.out.println("Invalid choice; use 9-15 or 0 to return.");
                 }
             } catch (Exception e) {

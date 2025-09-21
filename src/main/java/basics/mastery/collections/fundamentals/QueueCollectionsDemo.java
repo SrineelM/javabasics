@@ -1,9 +1,27 @@
-package basics.mastery.advanced;.collections.fundamentals;
+package basics.mastery.collections.fundamentals;
 
-import io.mastery.collections.CollectionDemo;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Queue and Deque collection implementations.
@@ -15,7 +33,7 @@ import java.util.stream.IntStream;
  * - BlockingQueue implementations: Thread-safe queues for concurrent scenarios
  * - Concurrent queue implementations for high-performance scenarios
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

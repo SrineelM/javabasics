@@ -1,10 +1,20 @@
-package basics.mastery.advanced;.java.collections.fundamentals;
+package basics.mastery.java.collections.fundamentals;
 
-import io.mastery.java.collections.CollectionDemo;
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Set collection implementations.
@@ -23,7 +33,7 @@ import java.util.stream.IntStream;
  * - Thread safety considerations
  * - Modern Java features with Sets
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */
@@ -548,7 +558,7 @@ public class SetCollectionsDemo extends CollectionDemo {
         printTip("Use Set.of() for small immutable sets, HashSet for mutable ones");
     }
     
-    private String formatBytes(long bytes) {
+    protected String formatBytes(long bytes) {
         if (bytes < 1024) return bytes + " B";
         else if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0);
         else return String.format("%.1f MB", bytes / (1024.0 * 1024.0));

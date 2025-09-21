@@ -1,5 +1,19 @@
 package basics.mastery.advanced;
 
+/**
+ * LockFreeCounterDemo
+ *
+ * Advanced demonstration of lock-free programming using CAS (compare-and-swap):
+ * - Shows ABA-safe increment via a retry loop with backoff
+ * - Contrasts with synchronized and AtomicInteger incrementAndGet()
+ * - Explains contention impact and fairness considerations
+ *
+ * This class is additive and does not modify existing logic.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

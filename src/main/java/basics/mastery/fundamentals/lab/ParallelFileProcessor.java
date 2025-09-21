@@ -1,4 +1,14 @@
-package basics.mastery.advanced;.fundamentals.lab;
+package basics.mastery.fundamentals.lab;
+
+/**
+ * Advanced Parallel File Processor Lab
+ *
+ * This comprehensive laboratory demonstrates the performance characteristics and trade-offs
+ * between different Java concurrency models when processing file-intensive workloads.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
 
 import java.io.IOException;
 import java.nio.file.Files;

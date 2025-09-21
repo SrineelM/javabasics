@@ -1,4 +1,4 @@
-package basics.mastery.advanced;.generics.fundamentals;
+package basics.mastery.generics.fundamentals;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -17,7 +17,7 @@ import java.util.function.Function;
  *
  * @param <K> the type of the key (first element)
  * @param <V> the type of the value (second element)
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public final class Pair<K, V> {

@@ -1,10 +1,21 @@
-package basics.mastery.advanced;.collections.fundamentals;
+package basics.mastery.collections.fundamentals;
 
-import io.mastery.collections.CollectionDemo;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Map collection implementations.
@@ -17,7 +28,7 @@ import java.util.stream.IntStream;
  * - EnumMap: Specialized map for enum keys
  * - Properties: String-based map for configuration
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

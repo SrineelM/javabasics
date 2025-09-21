@@ -1,11 +1,11 @@
-package basics.mastery.advanced;.java.collections.performance;
+package basics.mastery.java.collections.performance;
 
-import io.mastery.java.collections.CollectionDemo;
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Performance Analysis and Benchmarking.
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

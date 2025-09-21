@@ -1,8 +1,27 @@
-package basics.mastery.advanced;.generics.bounded;
+package basics.mastery.generics.bounded;
 
-import java.util.*;
-import java.util.function.*;
 import java.io.Serializable;
+
+/**
+ * Comprehensive examples of bounded type parameters in Java generics.
+ *
+ * @author Srineel with Copilot
+ * @version 1.0
+ */
+// ...existing code...
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Comprehensive examples of bounded type parameters in Java generics.
@@ -15,7 +34,7 @@ import java.io.Serializable;
  * - Complex constraint scenarios
  * - Type parameter inheritance and variance
  *
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public class BoundedTypeExamples {

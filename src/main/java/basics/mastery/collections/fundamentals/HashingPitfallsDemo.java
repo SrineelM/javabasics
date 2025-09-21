@@ -1,6 +1,11 @@
-package basics.mastery.advanced;.collections.fundamentals;
+package basics.mastery.collections.fundamentals;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * HashingPitfallsDemo

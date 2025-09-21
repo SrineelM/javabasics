@@ -1,13 +1,28 @@
-package basics.mastery.advanced;;
+package basics.mastery;
+
+/**
+ * Comprehensive demonstration of the "Big Four" concurrency bugs:
+ * 1. Deadlock
+ * 2. Livelock
+ * 3. Race Conditions
+ * 4. Starvation
+ *
+ * Includes detection and resolution strategies, plus advanced debugging techniques.
+ *
+ * This file merges logic from both concurrency_pitfalls.java and concurrency_pitfalls(1).java.
+ *
+ * Each section is clearly commented for educational purposes.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Arrays;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**

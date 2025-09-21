@@ -1,10 +1,25 @@
-package basics.mastery.advanced;.collections.concurrent;
+package basics.mastery.collections.concurrent;
 
-import io.mastery.collections.CollectionDemo;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of thread-safe collection implementations.
@@ -16,7 +31,7 @@ import java.util.stream.IntStream;
  * - BlockingQueue implementations: Thread-safe queues with blocking operations
  * - ConcurrentSkipListMap/Set: Thread-safe sorted collections
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */
@@ -25,23 +40,23 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
     @Override
     public void demonstrateAll() {
         printHeader("CONCURRENT COLLECTIONS COMPREHENSIVE GUIDE");
-        
+
         // Core concurrent collections
         demonstrateConcurrentHashMap();
         demonstrateCopyOnWriteCollections();
         demonstrateBlockingQueues();
         demonstrateConcurrentSkipListCollections();
-        
+
         // Performance analysis
         performanceComparison();
-        
+
         // Concurrent patterns and synchronization
         demonstrateConcurrentPatterns();
         demonstrateAtomicOperations();
-        
+
         // Best practices
         demonstrateBestPractices();
-        
+
         printSectionComplete("Concurrent Collections");
     }
     

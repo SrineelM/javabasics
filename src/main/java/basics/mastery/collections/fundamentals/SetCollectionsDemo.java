@@ -1,10 +1,20 @@
-package basics.mastery.advanced;.collections.fundamentals;
+package basics.mastery.collections.fundamentals;
 
-import io.mastery.collections.CollectionDemo;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Set collection implementations.
@@ -16,7 +26,7 @@ import java.util.stream.IntStream;
  * - EnumSet: Specialized set for enum types
  * - ConcurrentHashMap.newKeySet(): Thread-safe set implementation
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

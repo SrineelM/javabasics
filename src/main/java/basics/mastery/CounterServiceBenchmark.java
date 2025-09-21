@@ -1,4 +1,14 @@
-package basics.mastery.advanced;
+package basics.mastery;
+
+/**
+ * Simple Counter Service Benchmark
+ *
+ * This is a placeholder implementation that demonstrates performance
+ * comparison of different counter implementations.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
 /**
  * Simple Counter Service Benchmark
  * 

@@ -1,12 +1,29 @@
-package basics.mastery.advanced;.collections.performance;
+package basics.mastery.collections.performance;
 
-import io.mastery.collections.CollectionDemo;
-
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.stream.IntStream;
-import java.lang.management.MemoryMXBean;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
+
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive performance analysis of Java Collections Framework.
@@ -22,7 +39,7 @@ import java.lang.management.ManagementFactory;
  * - Optimization strategies
  * - Real-world performance considerations
  * 
- * @author Java Collections Tutorial
+ * @author Srineel with Copilot
  * @since Java 21
  */
 public class PerformanceAnalysisDemo extends CollectionDemo {

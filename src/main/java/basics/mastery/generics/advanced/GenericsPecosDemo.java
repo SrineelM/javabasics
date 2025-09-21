@@ -1,4 +1,19 @@
-package basics.mastery.advanced;.generics.advanced;
+package basics.mastery.generics.advanced;
+
+/**
+ * GenericsPecosDemo
+ *
+ * Addresses common beginner-to-advanced gaps in generics:
+ * - PECS (Producer Extends, Consumer Super)
+ * - Wildcards vs type parameters
+ * - Invariance of generics and safe covariance via wildcards
+ * - Higher-order functions with generics
+ *
+ * Additive educational example; no existing logic is modified.
+ *
+ * @author Srineel with Copilot
+ */
+// ...existing code...
 
 import java.util.ArrayList;
 import java.util.List;

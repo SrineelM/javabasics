@@ -1,4 +1,4 @@
-package basics.mastery.advanced;.java.collections;
+package basics.mastery.java.collections;
 
 /**
  * Abstract base class for all collection demonstration classes.
@@ -10,7 +10,7 @@ package basics.mastery.advanced;.java.collections;
  * to implement specific demonstration logic while maintaining consistent
  * presentation and structure.
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

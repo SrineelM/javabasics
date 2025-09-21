@@ -1,11 +1,11 @@
-package basics.mastery.advanced;.java.collections.modern;
+package basics.mastery.java.collections.modern;
 
-import io.mastery.java.collections.CollectionDemo;
+import basics.mastery.collections.CollectionDemo;
 
 /**
  * Comprehensive demonstration of Modern Java Features with Collections.
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */

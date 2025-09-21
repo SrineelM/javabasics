@@ -1,7 +1,6 @@
-package basics.mastery.advanced;.java.collections.fundamentals;
+package basics.mastery.java.collections.fundamentals;
 
-import io.mastery.java.collections.CollectionDemo;
-import java.util.*;
+import basics.mastery.collections.CollectionDemo;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
@@ -22,7 +21,7 @@ import java.util.stream.IntStream;
  * - Thread safety considerations and modern alternatives
  * - Functional programming operations with Lists
  * 
- * @author Java Collections Tutorial Team
+ * @author Srineel with Copilot
  * @version 2.0
  * @since Java 17
  */
@@ -683,7 +682,7 @@ public class ListCollectionsDemo extends CollectionDemo {
         printResult("After stream filtering", filtered);
     }
     
-    private String formatBytes(long bytes) {
+    protected String formatBytes(long bytes) {
         if (bytes < 1024) return bytes + " B";
         else if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0);
         else return String.format("%.1f MB", bytes / (1024.0 * 1024.0));

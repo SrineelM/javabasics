@@ -1,7 +1,15 @@
-package basics.mastery.advanced;.generics.interfaces;
 
-import java.util.*;
-import java.util.function.*;
+package basics.mastery.generics.interfaces;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Comprehensive examples of generic interfaces in Java.
@@ -15,7 +23,7 @@ import java.util.function.*;
  * - Contravariance and covariance in interfaces
  * - Default methods in generic interfaces
  *
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public class GenericInterfaceExamples {

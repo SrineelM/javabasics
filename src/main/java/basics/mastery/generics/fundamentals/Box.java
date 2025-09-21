@@ -1,4 +1,4 @@
-package basics.mastery.advanced;.generics.fundamentals;
+package basics.mastery.generics.fundamentals;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * - Monadic operations (map, flatMap)
  *
  * @param <T> the type of value stored in this box
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public final class Box<T> {

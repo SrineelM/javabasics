@@ -1,7 +1,21 @@
-package basics.mastery.advanced;.generics.fundamentals;
+package basics.mastery.generics.fundamentals;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Comprehensive collection of generic methods demonstrating various
@@ -16,7 +30,7 @@ import java.util.function.*;
  * - Generic method composition
  * - Type safety patterns
  *
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public final class GenericMethods {

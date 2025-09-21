@@ -1,8 +1,22 @@
-package basics.mastery.advanced;.generics.collections;
+package basics.mastery.generics.collections;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Comprehensive examples of generics with Java Collections Framework.
@@ -16,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * - Performance considerations with generics
  * - Thread-safe generic collections
  *
- * @author Java Generics Tutorial
+ * @author Srineel with Copilot
  * @version 1.0
  */
 public class GenericCollectionExamples {
