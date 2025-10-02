@@ -9,10 +9,10 @@ package basics.mastery;
  *
  * @author Srineel with Copilot
  */
-// ...existing code...
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import basics.mastery.fundamentals.ThreadBasicsDemo;
 
 /**
  * Main Application for Java Concurrency Training Program
@@ -43,9 +43,13 @@ public class MainApplication {
                 
                 switch (choice) {
                     case 1:
-                        System.out.println("📚 Thread Fundamentals");
-                        System.out.println("This module would demonstrate basic threading concepts.");
-                        System.out.println("(Implementation classes need to be created)");
+                        System.out.println("📚 Thread Basics Demo");
+                        System.out.println("Launching Thread Basics Demo...");
+                        try {
+                            ThreadBasicsDemo.main(new String[]{});
+                        } catch (Exception e) {
+                            System.out.println("Demo class not found or failed: " + e.getMessage());
+                        }
                         break;
                         
                     case 2:
