@@ -46,7 +46,7 @@ By completing this training, you will:
 ## 🏗️ Project Structure
 
 ```
-src/main/java/io/mastery/
+src/main/java/basics.mastery/
 ├── 📱 MainApplication.java                    # Interactive training interface
 ├── 🧠 fundamentals/lab/
 │   ├── ParallelFileProcessor.java            # Performance comparison lab
@@ -79,7 +79,7 @@ cd /Volumes/Work/JavaBasics/javasample1
 ### 2. Run the Training Program
 ```bash
 # Start the interactive training
-java -cp build/classes/java/main io.mastery.MainApplication
+java -cp build/classes/java/main basics.mastery.MainApplication
 ```
 
 ### 3. Follow the Learning Path
@@ -184,13 +184,13 @@ For detailed setup instructions and module-specific guidance, see [INSTRUCTIONS.
 Start here if you're new to threads and concurrency:
 
 1. Thread Basics Demo — creation, start vs run, join, interrupt
-	- Class: `io.mastery.fundamentals.ThreadBasicsDemo`
+	- Class: `basics.mastery.fundamentals.ThreadBasicsDemo`
 2. Synchronization Primitives — core coordination tools
-	- Class: `io.mastery.synchronization.SynchronizationPrimitivesDemo`
+	- Class: `basics.mastery.synchronization.SynchronizationPrimitivesDemo`
 3. Java Memory Model — visibility, volatile, atomics
-	- Class: `io.mastery.JavaMemoryModelDemo`
+	- Class: `basics.mastery.JavaMemoryModelDemo`
 4. Concurrency Pitfalls — deadlock, livelock, race, starvation
-	- Class: `io.mastery.ConcurrencyPitfallsDemo`
+	- Class: `basics.mastery.ConcurrencyPitfallsDemo`
 
 Tip: You can also launch these from `MainApplication` menu options 1, 2, 6, 7, or the supplemental options 9–15.
 
@@ -198,13 +198,13 @@ Tip: You can also launch these from `MainApplication` menu options 1, 2, 6, 7, o
 
 Targeted, small demos to explore specific topics (menu options 9–15):
 
-- 9 — `io.mastery.fundamentals.ThreadBasicsDemo`: Thread creation, lifecycle, join/interrupt, CPU vs IO
-- 10 — `io.mastery.modern.VirtualThreadPinningDemo`: Virtual thread pinning caveats and safe patterns
-- 11 — `io.mastery.collections.patterns.FailSafeIterationDemo`: Fail-fast vs fail-safe iteration; CopyOnWrite trade-offs
-- 12 — `io.mastery.collections.fundamentals.HashingPitfallsDemo`: Mutable keys, equals/hashCode, comparator consistency
-- 13 — `io.mastery.generics.advanced.GenericsPecosDemo`: PECS, invariance, and higher-order generics
-- 14 — `io.mastery.advanced.LockFreeCounterDemo`: CAS loop vs synchronized vs AtomicInteger
-- 15 — `io.mastery.tools.ThreadDiagnosticsQuickstart`: Thread dump and deadlock detection
+- 9 — `basics.mastery.fundamentals.ThreadBasicsDemo`: Thread creation, lifecycle, join/interrupt, CPU vs IO
+- 10 — `basics.mastery.modern.VirtualThreadPinningDemo`: Virtual thread pinning caveats and safe patterns
+- 11 — `basics.mastery.collections.patterns.FailSafeIterationDemo`: Fail-fast vs fail-safe iteration; CopyOnWrite trade-offs
+- 12 — `basics.mastery.collections.fundamentals.HashingPitfallsDemo`: Mutable keys, equals/hashCode, comparator consistency
+- 13 — `basics.mastery.generics.advanced.GenericsPecosDemo`: PECS, invariance, and higher-order generics
+- 14 — `basics.mastery.advanced.LockFreeCounterDemo`: CAS loop vs synchronized vs AtomicInteger
+- 15 — `basics.mastery.tools.ThreadDiagnosticsQuickstart`: Thread dump and deadlock detection
 
 ## ▶️ Try it (commands)
 
@@ -212,23 +212,23 @@ Run any demo directly after building:
 
 ```bash
 # Thread basics
-java -cp build/classes/java/main io.mastery.fundamentals.ThreadBasicsDemo
+java -cp build/classes/java/main basics.mastery.fundamentals.ThreadBasicsDemo
 
 # Virtual thread pinning caveats
-java -cp build/classes/java/main io.mastery.modern.VirtualThreadPinningDemo
+java -cp build/classes/java/main basics.mastery.modern.VirtualThreadPinningDemo
 
 # Collections: fail-safe iteration
-java -cp build/classes/java/main io.mastery.collections.patterns.FailSafeIterationDemo
+java -cp build/classes/java/main basics.mastery.collections.patterns.FailSafeIterationDemo
 
 # Collections: hashing & comparator pitfalls
-java -cp build/classes/java/main io.mastery.collections.fundamentals.HashingPitfallsDemo
+java -cp build/classes/java/main basics.mastery.collections.fundamentals.HashingPitfallsDemo
 
 # Generics: PECS & variance
-java -cp build/classes/java/main io.mastery.generics.advanced.GenericsPecosDemo
+java -cp build/classes/java/main basics.mastery.generics.advanced.GenericsPecosDemo
 
 # Lock-free counter (CAS)
-java -cp build/classes/java/main io.mastery.advanced.LockFreeCounterDemo
+java -cp build/classes/java/main basics.mastery.advanced.LockFreeCounterDemo
 
 # Thread diagnostics quickstart
-java -cp build/classes/java/main io.mastery.tools.ThreadDiagnosticsQuickstart
+java -cp build/classes/java/main basics.mastery.tools.ThreadDiagnosticsQuickstart
 ```

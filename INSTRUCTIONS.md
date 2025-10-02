@@ -39,7 +39,7 @@ echo "Build successful! ✅"
 
 ```bash
 # Start the interactive training interface
-java -cp build/classes/java/main io.mastery.MainApplication
+java -cp build/classes/java/main basics.mastery.MainApplication
 ```
 
 ### Optional: Run Supplemental Demos Directly
@@ -48,25 +48,25 @@ You can run focused demos without the menu:
 
 ```bash
 # Thread basics
-java -cp build/classes/java/main io.mastery.fundamentals.ThreadBasicsDemo
+java -cp build/classes/java/main basics.mastery.fundamentals.ThreadBasicsDemo
 
 # Virtual thread pinning
-java -cp build/classes/java/main io.mastery.modern.VirtualThreadPinningDemo
+java -cp build/classes/java/main basics.mastery.modern.VirtualThreadPinningDemo
 
 # Collections: fail-safe iteration
-java -cp build/classes/java/main io.mastery.collections.patterns.FailSafeIterationDemo
+java -cp build/classes/java/main basics.mastery.collections.patterns.FailSafeIterationDemo
 
 # Collections: hashing/comparator pitfalls
-java -cp build/classes/java/main io.mastery.collections.fundamentals.HashingPitfallsDemo
+java -cp build/classes/java/main basics.mastery.collections.fundamentals.HashingPitfallsDemo
 
 # Generics: PECS & variance
-java -cp build/classes/java/main io.mastery.generics.advanced.GenericsPecosDemo
+java -cp build/classes/java/main basics.mastery.generics.advanced.GenericsPecosDemo
 
 # Lock-free counter (CAS)
-java -cp build/classes/java/main io.mastery.advanced.LockFreeCounterDemo
+java -cp build/classes/java/main basics.mastery.advanced.LockFreeCounterDemo
 
 # Thread diagnostics quickstart
-java -cp build/classes/java/main io.mastery.tools.ThreadDiagnosticsQuickstart
+java -cp build/classes/java/main basics.mastery.tools.ThreadDiagnosticsQuickstart
 ```
 
 ## 🎯 Learning Path Guide
@@ -122,25 +122,25 @@ java -cp build/classes/java/main io.mastery.tools.ThreadDiagnosticsQuickstart
 Use these focused demos to explore specific concepts. Launch them from the menu or run directly.
 
 - 9 — Thread Basics Demo
-   - Class: `io.mastery.fundamentals.ThreadBasicsDemo`
+   - Class: `basics.mastery.fundamentals.ThreadBasicsDemo`
    - Topics: Thread creation, start vs run, join, interrupt, CPU vs IO
 - 10 — Virtual Thread Pinning Demo
-   - Class: `io.mastery.modern.VirtualThreadPinningDemo`
+   - Class: `basics.mastery.modern.VirtualThreadPinningDemo`
    - Topics: Pinning scenarios and safe patterns with virtual threads
 - 11 — Fail-Safe Iteration Demo
-   - Class: `io.mastery.collections.patterns.FailSafeIterationDemo`
+   - Class: `basics.mastery.collections.patterns.FailSafeIterationDemo`
    - Topics: Fail-fast vs fail-safe, CopyOnWrite trade-offs
 - 12 — Hashing & Comparator Pitfalls
-   - Class: `io.mastery.collections.fundamentals.HashingPitfallsDemo`
+   - Class: `basics.mastery.collections.fundamentals.HashingPitfallsDemo`
    - Topics: Mutable keys, equals/hashCode, comparator consistency
 - 13 — Generics: PECS & Variance
-   - Class: `io.mastery.generics.advanced.GenericsPecosDemo`
+   - Class: `basics.mastery.generics.advanced.GenericsPecosDemo`
    - Topics: Producer Extends/Consumer Super, invariance, higher-order generics
 - 14 — Lock-Free Counter (CAS)
-   - Class: `io.mastery.advanced.LockFreeCounterDemo`
+   - Class: `basics.mastery.advanced.LockFreeCounterDemo`
    - Topics: CAS retry loop vs synchronized vs AtomicInteger
 - 15 — Thread Diagnostics Quickstart
-   - Class: `io.mastery.tools.ThreadDiagnosticsQuickstart`
+   - Class: `basics.mastery.tools.ThreadDiagnosticsQuickstart`
    - Topics: Compact thread dumps, deadlock detection via ThreadMXBean
 
 Beginner Quick Start: Start with 9 → 2 → 6 → 7, then explore advanced topics.
@@ -349,13 +349,13 @@ To get meaningful results:
 ```bash
 # Solution: Rebuild the project
 ./gradlew clean build
-java -cp build/classes/java/main io.mastery.MainApplication
+java -cp build/classes/java/main basics.mastery.MainApplication
 ```
 
 #### **Issue**: OutOfMemoryError
 ```bash
 # Solution: Increase heap size
-java -Xmx4g -cp build/classes/java/main io.mastery.MainApplication
+java -Xmx4g -cp build/classes/java/main basics.mastery.MainApplication
 ```
 
 #### **Issue**: Virtual threads not working
@@ -363,7 +363,7 @@ java -Xmx4g -cp build/classes/java/main io.mastery.MainApplication
 # Check Java version (needs 19+ with preview, or 21+ stable)
 java --version
 # If using Java 19-20, enable preview features:
-java --enable-preview -cp build/classes/java/main io.mastery.MainApplication
+java --enable-preview -cp build/classes/java/main basics.mastery.MainApplication
 ```
 
 #### **Issue**: Performance inconsistency
