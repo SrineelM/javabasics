@@ -112,11 +112,13 @@ public class ListCollectionsDemo extends CollectionDemo {
     private void demonstrateArrayListCapacity() {
         printInfo("ArrayList capacity management:");
         
-        // Default capacity
+        // Default capacity - demonstrates internal capacity behavior
+        @SuppressWarnings("unused")
         List<Integer> defaultList = new ArrayList<>();
         printResult("Default initial capacity", "10 (implementation detail)");
         
-        // Optimized capacity
+        // Optimized capacity - demonstrates pre-sizing benefit
+        @SuppressWarnings("unused")
         List<Integer> optimizedList = new ArrayList<>(1000);
         printInfo("Pre-sizing ArrayList avoids multiple resize operations");
         

@@ -47,9 +47,14 @@ import basics.mastery.collections.CollectionDemo;
  * - Performance optimization patterns
  * - Code maintainability principles
  * 
+ * Note: This class contains many demonstration examples and helper classes
+ * that illustrate both good and bad practices for educational purposes.
+ * Some methods and classes are intentionally unused to show comparison patterns.
+ * 
  * @author Srineel with Copilot
  * @since Java 21
  */
+@SuppressWarnings("unused")
 public class BestPracticesDemo extends CollectionDemo {
 
     /**
@@ -101,6 +106,7 @@ public class BestPracticesDemo extends CollectionDemo {
         printInfo("Defensive Copying Patterns:");
         
         // Good practice: Defensive copying
+        @SuppressWarnings("unused")
         class UserAccountGood {
             private final List<String> roles;
             
@@ -133,6 +139,7 @@ public class BestPracticesDemo extends CollectionDemo {
         printResult("Account roles (protected)", account.getRoles());
         
         // Bad practice example (for demonstration)
+        @SuppressWarnings("unused")
         class UserAccountBad {
             private List<String> roles;
             

@@ -273,7 +273,7 @@ public class ConcurrencyPitfallsDemo {
             Object lock = new Object();
             Thread[] threads = new Thread[3];
             for (int i = 0; i < threads.length; i++) {
-                final int threadId = i;
+                final int threadIndex = i;
                 threads[i] = new Thread(() -> {
                     synchronized (lock) {
                         try {
@@ -282,7 +282,7 @@ public class ConcurrencyPitfallsDemo {
                             Thread.currentThread().interrupt();
                         }
                     }
-                }, "ContentionThread-" + i);
+                }, "ContentionThread-" + threadIndex);
                 threads[i].start();
             }
             try {
@@ -303,7 +303,11 @@ public class ConcurrencyPitfallsDemo {
         }
     }
 
-    // Utility log method
+    /**
+     * Utility logging method for formatted output with timestamp and thread name
+     * @param message The message to log
+     */
+    @SuppressWarnings("unused")
     private static void log(String message) {
         System.out.printf("[%s] %s: %s%n",
                 LocalTime.now().format(TIME_FORMAT),

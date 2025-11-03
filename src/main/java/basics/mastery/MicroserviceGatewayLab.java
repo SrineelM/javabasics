@@ -50,9 +50,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class MicroserviceGatewayLab {
     
-    // Configuration constants for HTTP testing
+    // Configuration constants for HTTP testing (kept for future use and documentation)
+    @SuppressWarnings("unused")
     private static final String BASE_URL = "https://httpbin.org"; // Public testing API for HTTP requests
+    @SuppressWarnings("unused")
     private static final int REQUEST_COUNT = 100;                 // Default number of requests for load testing
+    @SuppressWarnings("unused")
     private static final Duration TIMEOUT = Duration.ofSeconds(5); // Request timeout for HTTP calls
     
     public static void main(String[] args) throws Exception {
