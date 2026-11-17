@@ -1,14 +1,10 @@
 package basics.mastery.generics.bounded;
 
-import java.io.Serializable;
+// [coach:fix] Removed stray "// ...existing code..." placeholder (not valid outside imports).
+// [coach] All imports consolidated here; fully qualified use of Function/Predicate in the
+// original made two interface declarations ambiguous to readers — resolved by explicit imports.
 
-/**
- * Comprehensive examples of bounded type parameters in Java generics.
- *
- * @author Srineel with Copilot
- * @version 1.0
- */
-// ...existing code...
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +19,13 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Comprehensive examples of bounded type parameters in Java generics.
+ *
+ * @author Srineel with Copilot
+ * @version 1.0
+ */
+// [coach:fix] Second, duplicate class Javadoc was merged into the block above (kept all text).
 /**
  * Comprehensive examples of bounded type parameters in Java generics.
  * 
@@ -56,6 +59,8 @@ public class BoundedTypeExamples {
          * @param item the item to add
          */
         public void add(T item) {
+            // [coach] This is O(n log n) per add: add then re-sort the whole list.
+            // For a teaching example it's fine; for real use prefer TreeSet or insertion sort.
             items.add(item);
             Collections.sort(items);
         }
@@ -231,9 +236,12 @@ public class BoundedTypeExamples {
          */
         @SuppressWarnings("unchecked")
         public T[] sortedCopy(T[] items) throws CloneNotSupportedException {
+            // [coach] Shallow array copy; each element is then cloned via reflection.
             T[] copy = items.clone();
             
             // Clone each element
+            // [coach] The `instanceof Cloneable` check is redundant: the generic bound
+            // already guarantees T extends Cloneable. Harmless, but interviewers will notice.
             for (int i = 0; i < copy.length; i++) {
                 if (copy[i] instanceof Cloneable) {
                     try {
@@ -431,6 +439,8 @@ public class BoundedTypeExamples {
          * @return matching entities
          */
         public List<T> findByPredicate(Predicate<? super T> predicate) {
+            // [coach] The 3-arg collect() works but is verbose and not the idiomatic form.
+            // toList() (JDK 16+) or Collectors.toList() is clearer.
             return storage.values().stream()
                     .filter(predicate)
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -484,6 +494,7 @@ public class BoundedTypeExamples {
          * @return transformed numbers
          */
         public List<R> transform(Collection<T> input) {
+            // [coach] Same verbose collect() as above — clearer with .toList().
             return input.stream()
                     .map(transformer)
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -573,6 +584,7 @@ public class BoundedTypeExamples {
             this.description = description;
         }
         
+        // [coach] Correct override of Object.clone(); covariant return type is legal since JDK 5.
         @Override
         public ComparableScore clone() throws CloneNotSupportedException {
             return new ComparableScore(value, description);
@@ -580,6 +592,7 @@ public class BoundedTypeExamples {
         
         @Override
         public int compareTo(ComparableScore other) {
+            // [coach] Consistent with equals() below, good — Comparable docs recommend this.
             return Integer.compare(this.value, other.value);
         }
         

@@ -75,7 +75,8 @@ public class SequencedCollectionsDemo {
         System.out.println();
         
         // LinkedHashSet implements SequencedSet
-        Set<Integer> linkedSet = new LinkedHashSet<>();
+        // [coach] Declare as SequencedSet to avoid casts
+        SequencedSet<Integer> linkedSet = new LinkedHashSet<>();
         linkedSet.add(10);
         linkedSet.add(20);
         linkedSet.add(30);
@@ -84,20 +85,23 @@ public class SequencedCollectionsDemo {
         
         System.out.println("LinkedHashSet as SequencedSet:");
         System.out.println("  Elements: " + linkedSet);
-        System.out.println("  First: " + ((SequencedSet<Integer>)linkedSet).getFirst());
-        System.out.println("  Last: " + ((SequencedSet<Integer>)linkedSet).getLast());
-        System.out.println("  Reversed: " + ((SequencedSet<Integer>)linkedSet).reversed());
+        // [coach:fix] removed casts; interface typed reference
+        System.out.println("  First: " + linkedSet.getFirst());
+        System.out.println("  Last: " + linkedSet.getLast());
+        System.out.println("  Reversed: " + linkedSet.reversed());
         
         // SortedSet implements SequencedSet
-        SortedSet<String> treeSet = new TreeSet<>();
+        // [coach] Declare as SequencedSet for unified API; TreeSet still sorted
+        SequencedSet<String> treeSet = new TreeSet<>();
         treeSet.add("Charlie");
         treeSet.add("Alice");
         treeSet.add("Bob");
         
         System.out.println("\nTreeSet as SequencedSet:");
         System.out.println("  Elements (sorted): " + treeSet);
-        System.out.println("  First (smallest): " + treeSet.first());
-        System.out.println("  Last (largest): " + treeSet.last());
+        // [coach:fix] use sequenced API; first()/last() also available on SortedSet
+        System.out.println("  First (smallest): " + treeSet.getFirst());
+        System.out.println("  Last (largest): " + treeSet.getLast());
         System.out.println();
     }
 
@@ -110,7 +114,8 @@ public class SequencedCollectionsDemo {
         System.out.println();
         
         // LinkedHashMap implements SequencedMap
-        Map<String, Integer> linkedMap = new LinkedHashMap<>();
+        // [coach] Declare as SequencedMap to avoid casts
+        SequencedMap<String, Integer> linkedMap = new LinkedHashMap<>();
         linkedMap.put("First", 1);
         linkedMap.put("Second", 2);
         linkedMap.put("Third", 3);
@@ -118,20 +123,23 @@ public class SequencedCollectionsDemo {
         
         System.out.println("LinkedHashMap as SequencedMap:");
         System.out.println("  Entries: " + linkedMap);
-        System.out.println("  First entry: " + ((SequencedMap<String, Integer>)linkedMap).firstEntry());
-        System.out.println("  Last entry: " + ((SequencedMap<String, Integer>)linkedMap).lastEntry());
-        System.out.println("  Reversed: " + ((SequencedMap<String, Integer>)linkedMap).reversed());
+        // [coach:fix] removed casts; interface typed reference
+        System.out.println("  First entry: " + linkedMap.firstEntry());
+        System.out.println("  Last entry: " + linkedMap.lastEntry());
+        System.out.println("  Reversed: " + linkedMap.reversed());
         
         // SortedMap implements SequencedMap
-        SortedMap<Integer, String> treeMap = new TreeMap<>();
+        // [coach] Declare as SequencedMap for unified entry API
+        SequencedMap<Integer, String> treeMap = new TreeMap<>();
         treeMap.put(30, "Thirty");
         treeMap.put(10, "Ten");
         treeMap.put(20, "Twenty");
         
         System.out.println("\nTreeMap as SequencedMap:");
         System.out.println("  Entries (sorted by key): " + treeMap);
-        System.out.println("  First entry: " + treeMap.firstKey() + "=" + treeMap.get(treeMap.firstKey()));
-        System.out.println("  Last entry: " + treeMap.lastKey() + "=" + treeMap.get(treeMap.lastKey()));
+        // [coach:fix] use firstEntry()/lastEntry() instead of firstKey()+get()
+        System.out.println("  First entry: " + treeMap.firstEntry());
+        System.out.println("  Last entry: " + treeMap.lastEntry());
         System.out.println();
     }
 
@@ -209,6 +217,7 @@ public class SequencedCollectionsDemo {
         System.out.println("  Last: list.get(list.size()-1) = " + numbers.get(numbers.size() - 1));
         
         // Create reversed copy (inefficient)
+        // [coach] O(n) copy + O(n) reverse; reversed() view is O(1) to obtain
         List<Integer> reversedCopy = new ArrayList<>(numbers);
         Collections.reverse(reversedCopy);
         System.out.println("  Reversed (copy): " + reversedCopy);
@@ -217,18 +226,23 @@ public class SequencedCollectionsDemo {
         System.out.println("\nNew pattern (JDK 21):");
         System.out.println("  First: list.getFirst() = " + numbers.getFirst());
         System.out.println("  Last: list.getLast() = " + numbers.getLast());
+        // [coach] reversed() returns a view; iteration is reverse-order, no copy
         System.out.println("  Reversed (view): " + numbers.reversed());
         
         // Remove first and last
         List<Integer> mutableList = new ArrayList<>(List.of(10, 20, 30, 40, 50));
         System.out.println("\nOriginal: " + mutableList);
+        // [coach] removeFirst() on List is O(n) for ArrayList (shift), O(1) for ArrayDeque
         mutableList.removeFirst();
         System.out.println("After removeFirst(): " + mutableList);
+        // [coach] removeLast() on ArrayList is O(1) (no shift)
         mutableList.removeLast();
         System.out.println("After removeLast(): " + mutableList);
         
         // Add at both ends
+        // [coach] addFirst() on ArrayList is O(n); prefer ArrayDeque when adding at head
         mutableList.addFirst(5);
+        // [coach] addLast() on ArrayList is amortized O(1)
         mutableList.addLast(45);
         System.out.println("After addFirst(5) and addLast(45): " + mutableList);
         System.out.println();
@@ -254,6 +268,7 @@ public class SequencedCollectionsDemo {
          */
         static class LRUCache<K, V> {
             private final int capacity;
+            // [coach] LinkedHashMap already implements SequencedMap in JDK 21
             private final LinkedHashMap<K, V> cache = new LinkedHashMap<>();
             
             public LRUCache(int capacity) {
@@ -264,8 +279,11 @@ public class SequencedCollectionsDemo {
                 cache.put(key, value);
                 if (cache.size() > capacity) {
                     // Remove least recently used (first) entry
-                    K firstKey = ((SequencedMap<K, V>)cache).firstEntry().getKey();
-                    cache.remove(firstKey);
+                    // [coach:fix] use SequencedMap.firstEntry() directly; no cast needed
+                    Map.Entry<K, V> eldest = cache.firstEntry();
+                    if (eldest != null) {
+                        cache.remove(eldest.getKey());
+                    }
                 }
             }
             
@@ -311,6 +329,7 @@ public class SequencedCollectionsDemo {
             }
             
             public T peek() {
+                // [coach] getLast() is O(1) on ArrayDeque; also peekLast() would work
                 return undoStack.isEmpty() ? null : undoStack.getLast();
             }
         }

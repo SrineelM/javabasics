@@ -1,8 +1,12 @@
 package basics.mastery.generics.fundamentals;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Immutable generic pair implementation demonstrating multiple type parameters
@@ -20,6 +24,8 @@ import java.util.function.Function;
  * @author Srineel with Copilot
  * @version 1.0
  */
+// [coach] No stray "// ...existing code..." or duplicate class Javadoc. Structural fix is
+// limited to explicit imports for the fully-qualified references (Predicate, Stream, List, ArrayList).
 public final class Pair<K, V> {
     private final K key;
     private final V value;
@@ -52,6 +58,9 @@ public final class Pair<K, V> {
      * @param valueBox Box containing the value
      * @return Pair if both boxes have values, null otherwise
      */
+    // [coach:fix] Returning null from a factory breaks the "no null from factories" contract
+    // and forces callers into null checks. Prefer returning Box<Pair<K,V>> or Optional<Pair<K,V>>.
+    // Kept as-is to preserve the original signature; flagged under CORRECTNESS.
     public static <K, V> Pair<K, V> fromBoxes(Box<K> keyBox, Box<V> valueBox) {
         if (keyBox.isPresent() && valueBox.isPresent()) {
             return Pair.of(keyBox.get(), valueBox.get());
@@ -205,8 +214,8 @@ public final class Pair<K, V> {
      * @param valuePredicate predicate for the value
      * @return true if both predicates pass
      */
-    public boolean matches(java.util.function.Predicate<? super K> keyPredicate,
-                          java.util.function.Predicate<? super V> valuePredicate) {
+    public boolean matches(Predicate<? super K> keyPredicate,
+                          Predicate<? super V> valuePredicate) {
         return keyPredicate.test(key) && valuePredicate.test(value);
     }
     
@@ -216,8 +225,12 @@ public final class Pair<K, V> {
      * 
      * @return a stream containing key and value as Objects
      */
-    public java.util.stream.Stream<Object> stream() {
-        return java.util.stream.Stream.of(key, value);
+    // [coach] The `Stream<Object>` return type is a deliberate teaching point about erasure:
+    // K and V have no common supertype the compiler can express as a single type variable.
+    // You could still do `Stream.of(key)` and `Stream.of(value)` separately and concat,
+    // but the joined stream is inherently `Stream<Object>`. Correct as written.
+    public Stream<Object> stream() {
+        return Stream.of(key, value);
     }
     
     @Override
@@ -276,11 +289,14 @@ public final class Pair<K, V> {
      * @param combiner function to combine all pairs
      * @return the combined result
      */
+    // [coach] @SafeVarargs is legal here because the method is static. Correct.
+    // Note the warning suppression is not actually needed: the element type is Pair<K,V>,
+    // a reifiable-enough type at the call site (no unchecked cast into Object[]).
     @SafeVarargs
-    public static <K, V, R> R combineAll(BiFunction<java.util.List<K>, java.util.List<V>, R> combiner, 
+    public static <K, V, R> R combineAll(BiFunction<List<K>, List<V>, R> combiner, 
                                          Pair<K, V>... pairs) {
-        java.util.List<K> keys = new java.util.ArrayList<>();
-        java.util.List<V> values = new java.util.ArrayList<>();
+        List<K> keys = new ArrayList<>();
+        List<V> values = new ArrayList<>();
         
         for (Pair<K, V> pair : pairs) {
             keys.add(pair.getKey());

@@ -426,6 +426,7 @@ public class BestPracticesDemo extends CollectionDemo {
         
         // Builder pattern for large immutable collections
         printInfo("Builder Pattern Immutables:");
+        // [coach] Collectors.toUnmodifiableList() is Java 10+, not 9+; safe on 17/21.
         List<Integer> largeImmutableList = IntStream.range(1, 20)
                 .boxed()
                 .collect(Collectors.toUnmodifiableList());
@@ -547,6 +548,8 @@ public class BestPracticesDemo extends CollectionDemo {
         
         // Custom copy-on-write implementation concept
         class CopyOnWriteExample<T> {
+            // [coach] volatile ensures readers see the latest published array reference;
+            // happens-before is established by the volatile write in add().
             private volatile List<T> data = new ArrayList<>();
             
             public void add(T item) {
@@ -650,6 +653,10 @@ public class BestPracticesDemo extends CollectionDemo {
         // Good practice: Right-sizing
         int expectedSize = 1000;
         List<Integer> rightSized = new ArrayList<>(expectedSize);
+        // [coach] HashMap/HashSet capacity should be >= expectedSize / loadFactor
+        // to avoid a resize; default load factor is 0.75, so *4/3 is close but
+        // rounded up +1 is the practical idiom. For exact behavior use Guava's
+        // Maps.newHashMapWithExpectedSize — JDK offers no such helper.
         Map<String, Integer> rightSizedMap = new HashMap<>(expectedSize * 4 / 3 + 1);
         Set<String> rightSizedSet = new HashSet<>(expectedSize * 4 / 3 + 1);
         
@@ -923,6 +930,10 @@ public class BestPracticesDemo extends CollectionDemo {
     private void demonstrateLazyInitialization() {
         printInfo("Lazy Initialization Patterns:");
         
+        // [coach] This class is not thread-safe: a race on `expensiveList` can create
+        // two lists and lose writes. Suitable only for single-threaded demos. For
+        // multi-threaded lazy init use the initialization-on-demand holder idiom or
+        // a synchronized method.
         class LazyCollectionHolder {
             private List<String> expensiveList;
             private Map<String, Object> expensiveMap;
@@ -1145,118 +1156,4 @@ public class BestPracticesDemo extends CollectionDemo {
         demonstrateCollectionChoicePitfalls();
         
         // Pitfall 3: Memory leaks
-        demonstrateMemoryLeakPitfalls();
-        
-        // Pitfall 4: Performance issues
-        demonstratePerformancePitfalls();
-        
-        printWarning("Always understand the characteristics of your chosen collection");
-        printWarning("Be careful when modifying collections during iteration");
-        printWarning("Consider thread-safety requirements early in design");
-    }
-
-    /**
-     * Shows iteration pitfalls
-     */
-    private void demonstrateIterationPitfalls() {
-        printInfo("Iteration Pitfalls:");
-        
-        List<String> list = new ArrayList<>(List.of("A", "B", "C", "D"));
-        
-        // WRONG: Modifying during enhanced for loop
-        printWarning("WRONG: Modifying during enhanced for loop (would cause ConcurrentModificationException)");
-        
-        // CORRECT: Using iterator
-        printInfo("CORRECT: Using iterator for safe removal");
-        Iterator<String> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            String item = iterator.next();
-            if ("B".equals(item)) {
-                iterator.remove();
-            }
-        }
-        printResult("After safe removal", list);
-        
-        // CORRECT: Using removeIf
-        List<String> list2 = new ArrayList<>(List.of("A", "B", "C", "D"));
-        list2.removeIf("C"::equals);
-        printResult("After removeIf", list2);
-        
-        printTip("Use Iterator.remove() or Collection.removeIf() for safe modification");
-    }
-
-    /**
-     * Shows collection choice pitfalls
-     */
-    private void demonstrateCollectionChoicePitfalls() {
-        printInfo("Collection Choice Pitfalls:");
-        
-        // Wrong choice examples
-        printWarning("WRONG: Using ArrayList for frequent contains() checks");
-        printWarning("WRONG: Using TreeMap when insertion order matters");
-        printWarning("WRONG: Using synchronized collections in single-threaded code");
-        
-        // Correct choices
-        printInfo("CORRECT: Using HashSet for frequent contains() checks");
-        printInfo("CORRECT: Using LinkedHashMap when insertion order matters");
-        printInfo("CORRECT: Using regular collections in single-threaded scenarios");
-        
-        printTip("Choose collections based on primary operations: access, search, insertion, deletion");
-    }
-
-    /**
-     * Shows memory leak pitfalls
-     */
-    private void demonstrateMemoryLeakPitfalls() {
-        printInfo("Memory Leak Pitfalls:");
-        
-        printWarning("PITFALL: Static collections that grow indefinitely");
-        printWarning("PITFALL: Listeners not removed from collections");
-        printWarning("PITFALL: Caches without eviction policies");
-        
-        printInfo("SOLUTION: Use weak references, clear collections, implement eviction");
-        
-        // Example of proper cleanup
-        class ProperResourceManager {
-            private final List<String> resources = new ArrayList<>();
-            
-            public void addResource(String resource) {
-                resources.add(resource);
-            }
-            
-            public void shutdown() {
-                resources.clear(); // Proper cleanup
-            }
-        }
-        
-        printTip("Always provide cleanup methods for long-lived objects with collections");
-    }
-
-    /**
-     * Shows performance pitfalls
-     */
-    private void demonstratePerformancePitfalls() {
-        printInfo("Performance Pitfalls:");
-        
-        printWarning("PITFALL: Not specifying initial capacity");
-        printWarning("PITFALL: Using individual operations instead of bulk operations");
-        printWarning("PITFALL: Unnecessary copying of collections");
-        
-        printInfo("SOLUTION: Size appropriately, use bulk operations, avoid unnecessary copies");
-        
-        // Good practice example
-        int expectedSize = 1000;
-        List<Integer> efficientList = new ArrayList<>(expectedSize);
-        efficientList.addAll(IntStream.range(0, expectedSize).boxed().toList());
-        
-        printResult("Efficient list creation", "Proper initial capacity set");
-        printTip("Small optimizations in collection usage can have significant performance impact");
-    }
-
-    /**
-     * Main method for standalone execution
-     */
-    public static void main(String[] args) {
-        new BestPracticesDemo().demonstrateAll();
-    }
-}
+        demonstrateMemory

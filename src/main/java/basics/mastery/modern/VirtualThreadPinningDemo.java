@@ -21,6 +21,7 @@ public class VirtualThreadPinningDemo {
         System.out.println("=== Virtual Thread Pinning Demo ===\n");
         demoPinnedSynchronizedBlock();
         demoNonPinnedDesign();
+        demoPinningWithDiagnostics();
     }
 
     // Example: Holding a monitor while blocking (sleep) can pin the virtual thread
@@ -52,6 +53,34 @@ public class VirtualThreadPinningDemo {
         });
 
         vt.join();
+    }
+
+    // [coach] Extra demonstration: compare synchronized vs ReentrantLock under contention
+    static void demoPinningWithDiagnostics() throws InterruptedException {
+        System.out.println("3) Diagnostics: synchronized (pins) vs ReentrantLock (does not pin)");
+        // [coach] Run with -Djdk.tracePinnedThreads=full to see pinning stack traces
+        java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock();
+
+        Thread pinned = Thread.startVirtualThread(() -> {
+            synchronized (LOCK) {
+                log("synchronized: sleeping while holding monitor (pinned)");
+                try { Thread.sleep(150); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+        });
+
+        Thread unpinned = Thread.startVirtualThread(() -> {
+            lock.lock();
+            try {
+                log("ReentrantLock: sleeping while holding lock (can unmount)");
+                try { Thread.sleep(150); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            } finally {
+                lock.unlock();
+            }
+        });
+
+        pinned.join();
+        unpinned.join();
+        System.out.println();
     }
 
     private static void log(String msg) {

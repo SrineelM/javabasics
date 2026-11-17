@@ -1,5 +1,7 @@
 package basics.mastery.generics.fundamentals;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -23,9 +25,14 @@ import java.util.function.Supplier;
  * @author Srineel with Copilot
  * @version 1.0
  */
+// [coach:fix] This file had no stray "// ...existing code..." and no duplicate Javadoc;
+// the only structural change is explicit imports for List/Collections, used fully-qualified
+// in the original (javac accepts both, but imports read better and match the rest of the package).
 public final class Box<T> {
     // STUDENT NOTE: This class demonstrates the use of a single generic type parameter (T) to create a type-safe container.
     // STUDENT NOTE: The content field holds the value of type T. It can be any object or null.
+    // [coach] `content` is not final and `set` mutates it — so Box is a mutable container.
+    // That is unusual for a "Box"-style monad and rules out sharing instances across threads safely.
     private T content;
     
     // STUDENT NOTE: The constructor is private to enforce the use of static factory methods for object creation.
@@ -64,6 +71,8 @@ public final class Box<T> {
      * @return a new Box containing the supplied value
      */
     // STUDENT NOTE: fromSupplier allows lazy evaluation. The value is supplied when the Box is created.
+    // [coach] Strictly, this is NOT lazy: supplier.get() runs inside fromSupplier. Deferred would
+    // require storing the Supplier and calling get() on read, which this class does not do.
     public static <T> Box<T> fromSupplier(Supplier<T> supplier) {
         return new Box<>(supplier.get());
     }
@@ -239,6 +248,9 @@ public final class Box<T> {
      * @return a new Box with the combined result, or empty if either Box is empty
      */
     // STUDENT NOTE: combine() merges two Boxes using a function, returning a new Box with the result.
+    // [coach] Curried Function<T, Function<U, R>> is a valid shape but awkward. A BiFunction<T, U, R>
+    // reads better: combine(other, (t, u) -> ...). Kept here because it's a teaching point
+    // about higher-kinded-style encodings in Java.
     public <U, R> Box<R> combine(Box<U> other, Function<? super T, Function<? super U, ? extends R>> combiner) {
         return flatMap(t -> other.map(u -> combiner.apply(t).apply(u)));
     }
@@ -249,8 +261,9 @@ public final class Box<T> {
      * @return a new Box containing a singleton list
      */
     // STUDENT NOTE: asList() wraps the content in a singleton list inside a Box.
-    public Box<java.util.List<T>> asList() {
-        return map(java.util.Collections::singletonList);
+    public Box<List<T>> asList() {
+        // [coach] Collections::singletonList returns an immutable 1-element list; use List.of for JDK 9+.
+        return map(Collections::singletonList);
     }
     
     @Override

@@ -123,6 +123,7 @@ public class ListCollectionsDemo extends CollectionDemo {
         printInfo("Pre-sizing ArrayList avoids multiple resize operations");
         
         // Demonstrate performance difference
+        // [coach] naive timing loop; see PERFORMANCE notes about JMH dishonesty
         double defaultTime = measureTime(() -> {
             List<Integer> list = new ArrayList<>();
             for (int i = 0; i < 10000; i++) {
@@ -246,6 +247,7 @@ public class ListCollectionsDemo extends CollectionDemo {
         
         final int size = 10000;
         
+        // [coach] Head insert cost: ArrayList O(n) per insert due to System.arraycopy; LinkedList O(1).
         // Insertion at beginning comparison
         double arrayListInsertTime = measureTime(() -> {
             List<Integer> list = new ArrayList<>();
@@ -272,6 +274,7 @@ public class ListCollectionsDemo extends CollectionDemo {
             linkedList.add(i);
         });
         
+        // [coach] Only first 1000 indices touched; still demonstrates O(1) vs O(n) trend.
         double arrayListAccessTime = measureTime(() -> {
             for (int i = 0; i < 1000; i++) {
                 arrayList.get(i);
@@ -284,6 +287,7 @@ public class ListCollectionsDemo extends CollectionDemo {
             }
         });
         
+        // [coach:fix] was inverted label order; argument order now matches (LinkedList slower, then ArrayList)
         printComparison("1000 random accesses", linkedListAccessTime, 
                        arrayListAccessTime, "LinkedList", "ArrayList");
     }
@@ -439,6 +443,7 @@ public class ListCollectionsDemo extends CollectionDemo {
         
         printBenchmark("ArrayList random access", arrayListTime);
         printBenchmark("LinkedList random access", linkedListTime);
+        // [coach:fix] label order now matches (LinkedList slower first)
         printComparison("Random access", linkedListTime, arrayListTime, 
                        "LinkedList", "ArrayList");
     }
@@ -473,6 +478,7 @@ public class ListCollectionsDemo extends CollectionDemo {
     private void compareMemoryUsage(int elements) {
         printInfo("Memory usage characteristics:");
         
+        // [coach] System.gc() is a hint, not a guarantee; heap figures are unreliable for benchmarking
         System.gc(); // Suggest garbage collection
         long baseline = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         
@@ -605,6 +611,7 @@ public class ListCollectionsDemo extends CollectionDemo {
         List<Object> mixedList = List.of("String", 42, 3.14, List.of(1, 2, 3));
         
         for (Object item : mixedList) {
+            // [coach] Pattern switch is finalised in Java 21 (preview in 17-20)
             String description = switch (item) {
                 case String s -> "String of length " + s.length();
                 case Integer i -> "Integer: " + i;

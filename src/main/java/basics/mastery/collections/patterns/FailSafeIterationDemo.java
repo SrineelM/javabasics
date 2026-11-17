@@ -30,12 +30,17 @@ public class FailSafeIterationDemo {
             for (String s : list) {
                 System.out.println("  Visiting: " + s);
                 if (s.equals("B")) {
+                    // [coach] Structural modification (add/remove) bumps modCount.
+                    // The iterator's next() checks modCount against its expected value
+                    // and throws ConcurrentModificationException on the NEXT call.
                     list.add("D"); // Triggers ConcurrentModificationException
                 }
             }
         } catch (ConcurrentModificationException ex) {
             System.out.println("  Caught: " + ex);
             System.out.println("  Lesson: Don't structurally modify a collection while iterating it.");
+            // [coach] Alternative: use iterator.remove() for removals, or removeIf();
+            // for additions, collect into a temp list and addAll after the loop.
         }
     }
 
@@ -45,10 +50,15 @@ public class FailSafeIterationDemo {
         for (String s : list) {
             System.out.println("  Visiting: " + s);
             if (s.equals("B")) {
+                // [coach] Iterator snapshots the internal array reference at creation.
+                // add() builds a new array and republishes a volatile reference;
+                // the current iterator keeps iterating the old snapshot.
                 list.add("D"); // Safe: iterator works on a snapshot
             }
         }
         System.out.println("  After iteration: " + list);
         System.out.println("  Trade-off: Writes are O(n) due to copy; great for read-heavy workloads.");
+        // [coach] "Fail-safe" is not a formal Java term; the Javadoc calls these
+        // "snapshot" iterators. Fail-safe is the colloquial/Apache-commons phrasing.
     }
 }

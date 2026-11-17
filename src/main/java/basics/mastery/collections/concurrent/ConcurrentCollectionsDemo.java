@@ -115,7 +115,10 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
         printResult("Search for value > 200", foundKey);
         
         // Parallel reduce
-        Integer sum = concurrentMap.reduceValues(1, Integer.class::cast, Integer::sum);
+        // [coach] reduceValues requires a transformer from V (Integer) to the reduction type.
+        // [coach:fix] was Integer.class::cast, which is a no-op cast and could fail to compile
+        // depending on target typing; Integer::intValue is explicit and correct.
+        Integer sum = concurrentMap.reduceValues(1, Integer::intValue, Integer::sum);
         printResult("Sum of all values", sum);
         
         // Thread-safe key set as concurrent set
@@ -486,12 +489,17 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
                         Thread.currentThread().interrupt();
                     }
                 }))
+                // [coach] Stream.toList() (JDK 16+) returns an unmodifiable List.
+                // That is fine here: we only iterate and start/join threads.
                 .toList();
         
         // Multiple consumers
         List<Thread> consumers = IntStream.range(0, 2)
                 .mapToObj(i -> new Thread(() -> {
                     try {
+                        // [coach] Shutdown condition: producers are done AND queue is empty.
+                        // This is a data race on taskCount/queue emptiness but tolerable for a demo;
+                        // a real design would use a poison pill or a CountDownLatch.
                         while (taskCount.get() > 0 || !workQueue.isEmpty()) {
                             String task = workQueue.poll(100, TimeUnit.MILLISECONDS);
                             if (task != null) {
@@ -614,7 +622,8 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
     private void demonstrateBestPractices() {
         printSubHeader("Best Practices for Concurrent Collections");
         
-        printInfo("🔧 Concurrent Collection Selection Guide:");
+        // [coach] Removed emoji from printInfo strings to comply with the no-emoji rule.
+        printInfo("Concurrent Collection Selection Guide:");
         System.out.println("  • ConcurrentHashMap: High-concurrency key-value access");
         System.out.println("  • CopyOnWriteArrayList: Read-heavy, write-light scenarios");
         System.out.println("  • BlockingQueue: Producer-consumer patterns");
@@ -623,7 +632,7 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
         
         printSeparator();
         
-        printInfo("⚡ Performance Best Practices:");
+        printInfo("Performance Best Practices:");
         System.out.println("  • Use ConcurrentHashMap over Collections.synchronizedMap()");
         System.out.println("  • Size collections appropriately to minimize resizing");
         System.out.println("  • Use parallelismThreshold wisely in bulk operations");
@@ -632,7 +641,7 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
         
         printSeparator();
         
-        printInfo("🚨 Common Pitfalls to Avoid:");
+        printInfo("Common Pitfalls to Avoid:");
         System.out.println("  • Using synchronized wrappers instead of concurrent collections");
         System.out.println("  • Not handling InterruptedException properly");
         System.out.println("  • Assuming iteration order in concurrent collections");
@@ -677,6 +686,9 @@ public class ConcurrentCollectionsDemo extends CollectionDemo {
         printResult("Atomic timestamp update", timestamps.get(key));
         
         // Compare-and-swap pattern
+        // [coach] Read expected immediately before replace to reduce (but not eliminate)
+        // the CAS window; ConcurrentHashMap#replace(K, V, V) is itself atomic on the mapping,
+        // so the "read-then-replace" is safe against interleaving here.
         long expectedValue = timestamps.get(key);
         long newValue = currentTime + 1000;
         boolean updated = timestamps.replace(key, expectedValue, newValue);

@@ -528,8 +528,10 @@ public class WildcardExamples {
         public static void moveAnimals(
                 Collection<? extends Animal> source,
                 Collection<? super Animal> destination) {
-            List<Animal> toMove = new ArrayList<>(source);
-            destination.addAll(toMove);
+            // [coach:fix] was `new ArrayList<>(source)` - unnecessary copy; iterate directly
+            for (Animal animal : source) {
+                destination.add(animal);
+            }
             source.clear();
         }
     }

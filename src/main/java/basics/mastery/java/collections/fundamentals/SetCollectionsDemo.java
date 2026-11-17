@@ -150,10 +150,11 @@ public class SetCollectionsDemo extends CollectionDemo {
         // NavigableSet methods
         printResult("First (smallest)", sortedSet.first());
         printResult("Last (largest)", sortedSet.last());
+        // [coach] labels said "4.5" but code passed 5; fixed labels to match the calls
         printResult("Lower than 5", sortedSet.lower(5));
         printResult("Higher than 5", sortedSet.higher(5));
-        printResult("Floor of 4.5", sortedSet.floor(5));
-        printResult("Ceiling of 4.5", sortedSet.ceiling(5));
+        printResult("Floor of 5", sortedSet.floor(5));
+        printResult("Ceiling of 5", sortedSet.ceiling(5));
         
         // Subset operations
         printResult("Head set (< 5)", sortedSet.headSet(5));
@@ -268,7 +269,8 @@ public class SetCollectionsDemo extends CollectionDemo {
         
         // Set relationship testing
         printResult("A is subset of union", union.containsAll(set1));
-        printResult("A and B are disjoint", Collections.disjoint(difference1, difference2));
+        // [coach] was disjoint(difference1, difference2) -- trivially disjoint by construction; better check disjoint(set1, set2)
+        printResult("A and B are disjoint", Collections.disjoint(set1, set2));
         
         printTip("Use retainAll() for intersection, removeAll() for difference");
         printInfo("Set operations create new sets - original sets remain unchanged");
@@ -368,22 +370,34 @@ public class SetCollectionsDemo extends CollectionDemo {
             treeSet.add(i);
         });
         
+        // [coach] no-op loops risk JIT dead-code elimination; accumulate into a field-like sink
+        // to keep the claim honest the loop body should read the element. Using sum local
+        // is still DCE-prone; JMH is required for real numbers.
         double hashSetTime = measureTime(() -> {
-            for (@SuppressWarnings("unused") Integer value : hashSet) {
-                // Minimal work to avoid JVM optimizations
+            long sum = 0; // [coach] reads element to reduce (not eliminate) DCE risk
+            for (Integer value : hashSet) {
+                sum += value;
             }
+            //noinspection ResultOfMethodCallIgnored
+            Long.toString(sum); // [coach] keep sum observable
         });
         
         double linkedHashSetTime = measureTime(() -> {
-            for (@SuppressWarnings("unused") Integer value : linkedHashSet) {
-                // Minimal work
+            long sum = 0;
+            for (Integer value : linkedHashSet) {
+                sum += value;
             }
+            //noinspection ResultOfMethodCallIgnored
+            Long.toString(sum);
         });
         
         double treeSetTime = measureTime(() -> {
-            for (@SuppressWarnings("unused") Integer value : treeSet) {
-                // Minimal work
+            long sum = 0;
+            for (Integer value : treeSet) {
+                sum += value;
             }
+            //noinspection ResultOfMethodCallIgnored
+            Long.toString(sum);
         });
         
         printBenchmark("HashSet iteration", hashSetTime);
@@ -394,6 +408,7 @@ public class SetCollectionsDemo extends CollectionDemo {
     private void compareMemoryUsage(int operations) {
         printInfo("Memory usage comparison:");
         
+        // [coach] System.gc() is a hint; heap deltas here are indicative only
         // Force garbage collection before measurement
         System.gc();
         long baseline = getUsedMemory();

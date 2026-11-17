@@ -33,6 +33,8 @@ import java.util.function.Predicate;
  * @author Srineel with Copilot
  * @version 1.0
  */
+// [coach] No stray "// ...existing code..." or duplicate class Javadoc in this file — clean.
+// Imports are explicit; utility class is correctly final with a private ctor.
 public final class GenericMethods {
     
     private GenericMethods() {
@@ -64,6 +66,8 @@ public final class GenericMethods {
      * @throws IndexOutOfBoundsException if indices are invalid
      */
     public static <T> void swap(T[] array, int i, int j) {
+        // [coach] Objects.checkIndex is the JDK 9+ idiom; throws IndexOutOfBoundsException,
+        // matching the Javadoc contract. On JDK 8 you'd need explicit range checks.
         Objects.checkIndex(i, array.length);
         Objects.checkIndex(j, array.length);
         T temp = array[i];
@@ -81,6 +85,8 @@ public final class GenericMethods {
      * @param j second index
      */
     public static <T> void swap(List<T> list, int i, int j) {
+        // [coach] Overload note: same erasure as swap(T[], int, int)? No — different parameter
+        // types (T[] vs List<T>) means different erasures, so this compiles legally.
         Collections.swap(list, i, j);
     }
     
@@ -123,6 +129,8 @@ public final class GenericMethods {
      * @param elements the elements to include
      * @return a new List containing the elements
      */
+    // [coach] @SuppressWarnings("varargs") is redundant alongside @SafeVarargs; JDK's own List.of
+    // uses just @SafeVarargs. Both here are harmless; flagged for style only.
     @SafeVarargs
     @SuppressWarnings("varargs")
     public static <T> List<T> listOf(T... elements) {
@@ -149,6 +157,8 @@ public final class GenericMethods {
      * @param elements the elements to include
      * @return an immutable List
      */
+    // [coach] Collections.unmodifiableList(Arrays.asList(...)) is a valid immutable wrapper,
+    // but List.copyOf(elements) (JDK 10+) is clearer and returns a truly immutable copy.
     @SafeVarargs
     @SuppressWarnings("varargs")
     public static <T> List<T> immutableListOf(T... elements) {
@@ -166,6 +176,8 @@ public final class GenericMethods {
      * @return the maximum element
      * @throws NoSuchElementException if collection is empty
      */
+    // [coach] `Collections.max(collection)` throws NoSuchElementException itself on empty input.
+    // The explicit isEmpty check makes the contract obvious — keep both; interviewers like explicit.
     public static <T extends Comparable<? super T>> T max(Collection<T> collection) {
         if (collection.isEmpty()) {
             throw new NoSuchElementException("Collection is empty");
@@ -265,6 +277,9 @@ public final class GenericMethods {
      * 
      * @param collection the collection to clear
      */
+    // [coach:fix] `Collection<?>` is read-only for element types — you cannot add, but you CAN clear().
+    // Correct as written. If someone later changes the param to `List<Object>` it still works, but
+    // `Collection<?>` is the right signature: "any collection, no type knowledge needed".
     public static void clear(Collection<?> collection) {
         collection.clear();
     }
@@ -317,6 +332,9 @@ public final class GenericMethods {
      * @param accumulator the accumulating function
      * @return the reduced value
      */
+    // [coach] Signature uses `BiFunction<R, T, R>` — the T is invariant here, which is stricter
+    // than necessary. `BiFunction<R, ? super T, R>` would be more flexible (accept any supertype
+    // of T for the element side) and costs nothing. Not changed to preserve the original surface.
     public static <T, R> R fold(Collection<T> collection, R identity, BiFunction<R, T, R> accumulator) {
         R result = identity;
         for (T item : collection) {
@@ -359,6 +377,7 @@ public final class GenericMethods {
      * @return an Optional containing the last element, or empty if list is empty
      */
     public static <T> Optional<T> findLast(List<T> list) {
+        // [coach] Correct use of Optional: it's a return type only, per best practice.
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(list.size() - 1));
     }
     
@@ -478,6 +497,8 @@ public final class GenericMethods {
      * @param type the class object for type witness (not used at runtime)
      * @return an empty list
      */
+    // [coach] The `type` parameter is a "type witness" idiom: it lets callers say
+    // `GenericMethods.<String>emptyList(String.class)` to lock in T. Unused at runtime — fine.
     public static <T> List<T> emptyList(Class<T> type) {
         return new ArrayList<>();
     }
@@ -504,6 +525,7 @@ public final class GenericMethods {
      * @throws ClassCastException if the cast is invalid
      */
     public static <T> T cast(Object obj, Class<T> type) {
+        // [coach] Class.cast is the "checked cast" idiom — allows null and does a runtime instanceof check.
         return type.cast(obj);
     }
     
@@ -517,6 +539,8 @@ public final class GenericMethods {
      * @param collection the collection to process
      * @return a description string
      */
+    // [coach] Overload resolution: a List argument picks the more specific overload (List<T>) below.
+    // Same erasure? No — Collection<T> vs List<T> erase to Collection vs List, distinct parameter types.
     public static <T> String describe(Collection<T> collection) {
         return String.format("Collection of %s with %d elements", 
                            collection.getClass().getSimpleName(), 

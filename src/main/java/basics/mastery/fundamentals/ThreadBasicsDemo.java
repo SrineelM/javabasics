@@ -1,5 +1,8 @@
 package basics.mastery.fundamentals;
 
+// [coach:fix] Removed the stray "// ...existing code..." placeholder (not valid outside imports)
+// [coach] No imports needed: this file only uses java.lang types.
+
 /**
  * ThreadBasicsDemo
  *
@@ -14,8 +17,7 @@ package basics.mastery.fundamentals;
  *
  * @author Srineel with Copilot
  */
-// ...existing code...
-
+// [coach:fix] Second, duplicate Javadoc block was merged into the one above (kept all text)
 /**
  * ThreadBasicsDemo
  *
@@ -60,6 +62,8 @@ public class ThreadBasicsDemo {
         System.out.println("1) Creating threads: Thread subclass vs Runnable");
 
         // Method 1: Create a thread by subclassing the Thread class and overriding run().
+        // [coach] Anonymous subclass of Thread is legal; the recommended modern form
+        // is Runnable + Thread (or an executor), because you rarely need to extend Thread itself.
         Thread t1 = new Thread() {
             @Override
             public void run() {
@@ -85,6 +89,7 @@ public class ThreadBasicsDemo {
 
         // The join() method makes the current thread (main) wait until the specified thread terminates.
         // This is important to ensure we see the output from the threads before the main method exits.
+        // [coach] join() here can throw InterruptedException; the method signature declares it.
         t1.join();
         t2.join();
         System.out.println();
@@ -146,6 +151,8 @@ public class ThreadBasicsDemo {
 
         // A CPU-bound task: performs a heavy computation (summing numbers in a tight loop).
         // This task will keep one CPU core very busy.
+        // [coach] 5,000,000 int sum overflows int? No — sum is long, but i is int, fine.
+        // The JIT may eliminate the sum in a benchmark; not an issue for a demo, but worth knowing.
         Runnable cpuTask = () -> {
             long sum = 0;
             for (int i = 0; i < 5_000_000; i++) {

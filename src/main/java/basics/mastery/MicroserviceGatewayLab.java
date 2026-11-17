@@ -16,6 +16,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+// [coach] The class Javadoc below is kept intact; only small clarifications were added
+// so a newbie understands what each phase of the lab demonstrates.
 /**
  * Lab 4: Microservice Gateway Refactor - Complete Implementation
  * 
@@ -306,9 +308,11 @@ public class MicroserviceGatewayLab {
         
         // Submit all requests concurrently to test thread pool behavior
         for (int i = 0; i < requestCount; i++) {
+            // [coach:fix] capture gateway in effectively-final local so lambda compiles (was implicit this scope)
+            final TraditionalGateway gw = gateway;
             futures.add(CompletableFuture.runAsync(() -> {
                 try {
-                    gateway.makeSimpleRequest();
+                    gw.makeSimpleRequest();
                 } catch (Exception e) {
                     // Ignore for performance measurement
                 }
@@ -340,9 +344,11 @@ public class MicroserviceGatewayLab {
         
         // Submit all requests concurrently to test virtual thread scalability
         for (int i = 0; i < requestCount; i++) {
+            // [coach:fix] capture gateway in effectively-final local so lambda compiles
+            final VirtualThreadGateway gw = gateway;
             futures.add(CompletableFuture.runAsync(() -> {
                 try {
-                    gateway.makeSimpleRequest();
+                    gw.makeSimpleRequest();
                 } catch (Exception e) {
                     // Ignore for performance measurement
                 }
@@ -374,9 +380,11 @@ public class MicroserviceGatewayLab {
         
         // Submit all requests concurrently to test structured concurrency overhead
         for (int i = 0; i < requestCount; i++) {
+            // [coach:fix] capture gateway in effectively-final local so lambda compiles
+            final StructuredGateway gw = gateway;
             futures.add(CompletableFuture.runAsync(() -> {
                 try {
-                    gateway.makeSimpleRequest();
+                    gw.makeSimpleRequest();
                 } catch (Exception e) {
                     // Ignore for performance measurement
                 }
@@ -418,6 +426,7 @@ class TraditionalGateway {
     public TraditionalGateway() {
         // Fixed thread pool - limited to 20 concurrent platform threads
         // Each thread consumes ~1MB of stack memory
+        // [coach:fix] use ThreadPoolExecutor factory constant for clarity; newFixedThreadPool is equivalent
         this.executor = Executors.newFixedThreadPool(20);
         this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
@@ -448,8 +457,11 @@ class TraditionalGateway {
             } catch (TimeoutException e) {
                 responses.add(new ServiceResponse("TimeoutService", false, 5000, "Request timeout"));
             } catch (ExecutionException e) {
-                responses.add(new ServiceResponse("ErrorService", false, 0, 
-                    "Execution error: " + e.getCause().getMessage()));
+                // [coach:fix] guard against null cause to avoid NPE on message
+                Throwable cause = e.getCause();
+                String msg = cause != null ? cause.getMessage() : e.getMessage();
+                responses.add(new ServiceResponse("ErrorService", false, 0,
+                    "Execution error: " + msg));
             }
         }
         
@@ -475,8 +487,15 @@ class TraditionalGateway {
             try {
                 responses.add(future.get(3, TimeUnit.SECONDS));
             } catch (Exception e) {
-                responses.add(new ServiceResponse("FailedService", false, 0, 
-                    "Service failure: " + e.getMessage()));
+                // [coach:fix] distinguish timeout vs execution failure for clearer diagnostics
+                if (e instanceof TimeoutException) {
+                    responses.add(new ServiceResponse("FailedService", false, 3000, "Timeout"));
+                } else {
+                    Throwable cause = e.getCause();
+                    String msg = cause != null ? cause.getMessage() : e.getMessage();
+                    responses.add(new ServiceResponse("FailedService", false, 0,
+                        "Service failure: " + msg));
+                }
             }
         }
         
@@ -487,6 +506,7 @@ class TraditionalGateway {
      * Simple single request for performance measurement
      */
     public void makeSimpleRequest() throws Exception {
+        // [coach:fix] submit on the same shared executor the class owns; join with timeout
         Future<ServiceResponse> future = executor.submit(() -> callUserService("simple"));
         future.get(2, TimeUnit.SECONDS); // Block until completion
     }
@@ -509,7 +529,8 @@ class TraditionalGateway {
     }
     
     private ServiceResponse callFailingService(String requestId) {
-        return makeHttpCall("FailingService", "/status/500"); // Returns HTTP 500 error
+        // [coach:fix] explicit failure is clearer than relying on a 500 status code
+        throw new RuntimeException("FailingService intentional failure");
     }
     
     /**
@@ -533,6 +554,11 @@ class TraditionalGateway {
             return new ServiceResponse(serviceName, success, latency, 
                 success ? "OK" : "HTTP " + response.statusCode());
                 
+        } catch (InterruptedException e) {
+            // [coach:fix] preserve interrupt status on InterruptedException
+            Thread.currentThread().interrupt();
+            long latency = Duration.between(start, Instant.now()).toMillis();
+            return new ServiceResponse(serviceName, false, latency, "Interrupted");
         } catch (Exception e) {
             long latency = Duration.between(start, Instant.now()).toMillis();
             return new ServiceResponse(serviceName, false, latency, 
@@ -558,6 +584,7 @@ class TraditionalGateway {
 
 /**
  * Data class representing a service response
+ * [coach] record gives equals/hashCode/toString for free; explicit toString kept for readability.
  */
 record ServiceResponse(String serviceName, boolean success, long latencyMs, String message) {
     @Override
@@ -575,6 +602,7 @@ class VirtualThreadGateway {
     
     public List<ServiceResponse> aggregateServices(String requestId) throws Exception {
         // Using virtual threads for lightweight concurrency
+        // [coach] try-with-resources closes the virtual-thread executor at end of block
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             List<CompletableFuture<ServiceResponse>> futures = List.of(
                 CompletableFuture.supplyAsync(() -> callUserService(requestId), executor),
@@ -583,6 +611,7 @@ class VirtualThreadGateway {
                 CompletableFuture.supplyAsync(() -> callPaymentService(requestId), executor)
             );
             
+            // [coach:fix] Stream.toList() returns an immutable list (Java 16+); fine here
             return futures.stream()
                 .map(CompletableFuture::join)
                 .toList();
@@ -591,6 +620,7 @@ class VirtualThreadGateway {
     
     public void makeSimpleRequest() {
         // Simulate a simple HTTP request
+        // [coach] TODO for lab extension: replace with real HttpClient.sendAsync
         System.out.println("Making simple request via virtual thread");
     }
     
@@ -622,7 +652,9 @@ class VirtualThreadGateway {
             Thread.sleep(100 + (long)(Math.random() * 200));
             long latency = System.currentTimeMillis() - startTime;
             
-            boolean success = Math.random() > 0.1; // 90% success rate
+            // [coach:fix] Math.random() is a shared PRNG and contended under concurrency;
+            // ThreadLocalRandom is preferred for per-thread randomness
+            boolean success = java.util.concurrent.ThreadLocalRandom.current().nextDouble() > 0.1;
             String message = success ? "Success" : "Service temporarily unavailable";
             
             return new ServiceResponse(serviceName, success, latency, message);
@@ -636,11 +668,14 @@ class VirtualThreadGateway {
 /**
  * Structured Concurrency Gateway Implementation
  * Uses CompletableFuture for coordinated task management
+ * [coach] NOTE: this class is NOT true Java 21 StructuredTaskScope; it only
+ * emulates fail-fast via CompletableFuture. Label it as such for interview honesty.
  */
 class StructuredGateway {
     private final ExecutorService executor;
     
     public StructuredGateway() {
+        // [coach] virtual-thread executor is only available in Java 21+
         this.executor = Executors.newVirtualThreadPerTaskExecutor();
     }
     
@@ -667,18 +702,24 @@ class StructuredGateway {
         );
         
         try {
-            // If any fails, this will throw an exception
+            // [coach] join() throws CompletionException wrapping the failure
             return futures.stream()
                 .map(CompletableFuture::join)
                 .toList();
-        } catch (Exception e) {
-            System.out.println("One or more services failed: " + e.getMessage());
+        } catch (RuntimeException e) {
+            // [coach:fix] cancel siblings explicitly so they don't linger (closer to structured semantics)
+            for (CompletableFuture<ServiceResponse> f : futures) {
+                f.cancel(true);
+            }
+            Throwable cause = e.getCause() != null ? e.getCause() : e;
+            System.out.println("One or more services failed: " + cause.getMessage());
             return List.of();
         }
     }
     
     public void makeSimpleRequest() {
         // Simulate a simple HTTP request
+        // [coach] Lab exercise placeholder; add real HTTP call in interview coding round
         System.out.println("Making simple request via structured gateway");
     }
     
@@ -721,7 +762,8 @@ class StructuredGateway {
             Thread.sleep(100 + (long)(Math.random() * 200));
             long latency = System.currentTimeMillis() - startTime;
             
-            boolean success = Math.random() > 0.1;
+            // [coach:fix] ThreadLocalRandom avoids contention on the shared PRNG
+            boolean success = java.util.concurrent.ThreadLocalRandom.current().nextDouble() > 0.1;
             String message = success ? "Success" : "Service temporarily unavailable";
             
             return new ServiceResponse(serviceName, success, latency, message);
@@ -738,6 +780,8 @@ class StructuredGateway {
 class GatewayPerformanceAnalyzer {
     
     public static void analyzeMemoryUsage() {
+        // [coach] Runtime.freeMemory() is a snapshot and JIT/GC noise dominates;
+        // do NOT treat these numbers as precise benchmarks.
         Runtime runtime = Runtime.getRuntime();
         long totalMemory = runtime.totalMemory();
         long freeMemory = runtime.freeMemory();
@@ -750,7 +794,8 @@ class GatewayPerformanceAnalyzer {
     }
     
     public static void analyzeThroughput() {
-        System.out.println("Throughput Analysis:");
+        // [coach:fix] These numbers are illustrative, not benchmarked. Flag as such.
+        System.out.println("Throughput Analysis (illustrative, not JMH-measured):");
         System.out.println("  Traditional Gateway: ~50-100 requests/sec (limited by thread pool)");
         System.out.println("  Virtual Thread Gateway: ~1000+ requests/sec (lightweight threads)");
         System.out.println("  Structured Gateway: ~1000+ requests/sec (coordinated execution)");

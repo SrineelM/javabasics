@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
-please re * ConcurrencyPitfallsDemo
+ * ConcurrencyPitfallsDemo
  *
  * Comprehensive demonstration of the "Big Four" concurrency bugs:
  * 1. Deadlock

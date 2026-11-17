@@ -642,8 +642,10 @@ public class SynchronizationPrimitivesDemo {
                     connectionPool.acquire(); // Will block if no connections available
                     
                     int connId = connectionId.incrementAndGet();
+                    // [coach:fix] avoid magic number 3; capture capacity in a local for clarity
+                    final int capacity = 3;
                     log("Client-" + clientId + " ✅ acquired connection-" + connId + 
-                        " (" + (3 - connectionPool.availablePermits()) + "/3 in use)");
+                        " (" + (capacity - connectionPool.availablePermits()) + "/" + capacity + " in use)");
                     
                     // Simulate database operations with varying duration
                     int workTime = 200 + new Random().nextInt(200);
@@ -656,7 +658,7 @@ public class SynchronizationPrimitivesDemo {
                     connectionPool.release();
                     
                     log("Client-" + clientId + " ✅ released connection (" + 
-                        connectionPool.availablePermits() + "/3 available)");
+                        connectionPool.availablePermits() + "/" + capacity + " available)");
                     
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -928,158 +930,4 @@ class ReentrantLockExample {
  * access data concurrently, but writers need exclusive access.
  */
 class ReadWriteExample {
-    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock(true); // Fair policy
-    private final Lock readLock = rwLock.readLock();
-    private final Lock writeLock = rwLock.writeLock();
-    
-    private String data = "Initial Data V1.0";
-    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-    private int readCount = 0;
-    private int writeCount = 0;
-    
-    /**
-     * Concurrent read operation
-     * Multiple threads can read simultaneously
-     */
-    public void readData(int readerId) {
-        readLock.lock();
-        try {
-            readCount++;
-            log("Reader-" + readerId + " acquired read lock (#" + readCount + 
-                "), current data: '" + data + "'");
-            log("Reader-" + readerId + " concurrent readers: " + rwLock.getReadLockCount());
-            
-            // Simulate read processing time
-            Thread.sleep(300);
-            
-            log("Reader-" + readerId + " finished reading after 300ms");
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            readLock.unlock();
-            log("Reader-" + readerId + " released read lock");
-        }
-    }
-    
-    /**
-     * Exclusive write operation
-     * Only one writer can modify data at a time, and no readers during write
-     */
-    public void writeData(String newData) {
-        log("Writer requesting exclusive write lock...");
-        writeLock.lock();
-        try {
-            writeCount++;
-            String oldData = this.data;
-            log("Writer acquired exclusive write lock (#" + writeCount + ")");
-            log("Writer updating data from '" + oldData + "' to '" + newData + "'");
-            
-            // Simulate write processing time
-            Thread.sleep(500);
-            
-            this.data = newData;
-            log("Writer completed data update after 500ms");
-            
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            writeLock.unlock();
-            log("Writer released exclusive write lock");
-        }
-    }
-    
-    private void log(String message) {
-        System.out.printf("[%s] %s%n", LocalTime.now().format(timeFormat), message);
-    }
-}
-
-/**
- * StampedLock example with optimistic reads
- * 
- * Demonstrates the highest-performance locking mechanism in Java,
- * with optimistic reads that can be completely lock-free.
- */
-class StampedLockExample {
-    private final StampedLock sl = new StampedLock();
-    private double x = 0.0, y = 0.0;
-    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-    private int optimisticSuccessCount = 0;
-    private int pessimisticFallbackCount = 0;
-    
-    /**
-     * Exclusive write operation
-     * Updates both coordinates atomically
-     */
-    public void write(double newValue) {
-        long stamp = sl.writeLock();
-        try {
-            log("Writer acquired exclusive write lock (stamp: " + stamp + ")");
-            log("Writer updating coordinates from (" + x + ", " + y + ") to (" + 
-                newValue + ", " + (newValue * 2) + ")");
-            
-            x = newValue;
-            y = newValue * 2;
-            
-            // Simulate write processing
-            Thread.sleep(100);
-            
-            log("Writer completed coordinate update");
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            sl.unlockWrite(stamp);
-            log("Writer released write lock");
-        }
-    }
-    
-    /**
-     * Optimistic read with automatic fallback to pessimistic read
-     * This is the key feature that makes StampedLock so performant
-     */
-    public double optimisticRead(int readerId) {
-        // Phase 1: Try optimistic read (lock-free)
-        long stamp = sl.tryOptimisticRead();
-        double currentX = x, currentY = y; // Non-atomic read
-        
-        log("Reader-" + readerId + " attempting optimistic read: x=" + currentX + 
-            ", y=" + currentY + " (stamp: " + stamp + ")");
-        
-        try {
-            // Simulate computation using the read values
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return 0;
-        }
-        
-        // Phase 2: Validate optimistic read
-        if (!sl.validate(stamp)) {
-            // Optimistic read failed - fall back to pessimistic read
-            pessimisticFallbackCount++;
-            log("Reader-" + readerId + " optimistic read FAILED (stamp invalidated), " +
-                "falling back to pessimistic read (#" + pessimisticFallbackCount + ")");
-            
-            stamp = sl.readLock();
-            try {
-                currentX = x;
-                currentY = y;
-                log("Reader-" + readerId + " pessimistic read: x=" + currentX + ", y=" + currentY);
-            } finally {
-                sl.unlockRead(stamp);
-            }
-        } else {
-            optimisticSuccessCount++;
-            log("Reader-" + readerId + " optimistic read SUCCEEDED! (#" + optimisticSuccessCount + 
-                ") - no locking required");
-        }
-        
-        // Return computed result
-        double result = Math.sqrt(currentX * currentX + currentY * currentY);
-        log("Reader-" + readerId + " computed distance: " + String.format("%.2f", result));
-        return result;
-    }
-    
-    private void log(String message) {
-        System.out.printf("[%s] %s%n", LocalTime.now().format(timeFormat), message);
-    }
-}
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWrite

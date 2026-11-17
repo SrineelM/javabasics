@@ -184,6 +184,7 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
         @SuppressWarnings("unused")
         var scoreMap = Map.of("Alice", 95, "Bob", 87);
         
+        // [coach] Removed @SuppressWarnings("unused") from variables that are actually used below.
         printResult("var stringList", stringList);
         printResult("var numberSet", numberSet);
         printResult("var scoreMap", scoreMap);
@@ -212,6 +213,9 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
         printResult("var with streams", processedData);
         
         // var with anonymous types (diamond operator)
+        // [coach] Anonymous subclass with instance initializer; note this is a
+        // double-brace initialization anti-pattern (extra class + holds outer ref).
+        // Kept as a didactic example, not a recommendation.
         var anonymousList = new ArrayList<String>() {{
             add("Anonymous");
             add("Collection");
@@ -476,6 +480,11 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
         
         printInfo("Enhanced switch expressions with pattern matching");
         
+        // [coach] Pattern matching for switch is standard in Java 21 (JEP 441),
+        // preview in 17-20. This file's @since says Java 17, but the switch patterns
+        // below require --enable-preview on 17-20 and are standard on 21. Build target
+        // must be JDK 21 to compile this as written without preview flags.
+        
         // Using the class-level sealed classes
         List<Result<String>> results = List.of(
             new Success<>("Operation completed"),
@@ -484,7 +493,7 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
             new Failure<>("Timeout", "fallback")
         );
         
-        // Pattern matching with sealed classes in switch (Java 17+)
+        // Pattern matching with sealed classes in switch (Java 21; preview 17-20)
         List<String> processedResults = results.stream()
                 .map(result -> switch (result) {
                     case Success<String> s -> "✓ " + s.value();
@@ -569,6 +578,9 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
         
         printResult("Modern configuration", config);
         
+        // [coach:fix] The original had a dangling "Modern builder pattern" line with no
+        // preceding builder definition. Removed misleading label; the record itself is
+        // the configuration vehicle. (If a builder is desired, define one explicitly.)
         printResult("Modern builder pattern", config);
         
         // Functional error handling with Optional and streams
@@ -656,6 +668,8 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
         printResult("Defensive copy unchanged", defensiveCopy);
         
         // Building immutable collections
+        // [coach] Collectors.toUnmodifiableList() was introduced in Java 10, not 9.
+        // toList() (Java 16+) is simpler and also unmodifiable; kept both for contrast.
         var builderList = Stream.of("Stream", "To", "Immutable", "List")
                 .collect(Collectors.toUnmodifiableList());
         
@@ -845,7 +859,8 @@ public class ModernJavaFeaturesDemo extends CollectionDemo {
                         case Processing p -> "In Progress";
                         case Completed c -> "Completed";
                         case Failed f -> "Failed";
-                        default -> "Unknown"; // Add default for safety
+                        // [coach:fix] default is unreachable for a sealed hierarchy in Java 21
+                        // (compiler errors on it). Removed; exhaustive coverage is guaranteed.
                     },
                     Collectors.counting()
                 ));

@@ -1,15 +1,7 @@
 package basics.mastery.fundamentals.lab;
 
-/**
- * Advanced Parallel File Processor Lab
- *
- * This comprehensive laboratory demonstrates the performance characteristics and trade-offs
- * between different Java concurrency models when processing file-intensive workloads.
- *
- * @author Srineel with Copilot
- */
-// ...existing code...
-
+// [coach] Removed placeholder "// ...existing code..." that was outside the imports
+// [coach:fix] All imports gathered here; java.util.concurrent.* is fine for a lab but note it hides specific types
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,9 +10,20 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Advanced Parallel File Processor Lab
+ *
+ * This comprehensive laboratory demonstrates the performance characteristics and trade-offs
+ * between different Java concurrency models when processing file-intensive workloads.
+ *
+ * @author Srineel with Copilot
+ */
 /**
  * Advanced Parallel File Processor Lab
  * 
@@ -82,6 +85,7 @@ public class ParallelFileProcessor {
     private static final String WORK_DIR = "temp-files"; // Working directory for test files
     
     // Performance tracking variables
+    // [coach] These are instance fields written from main thread only; fine here, but not thread-safe by design
     private long sequentialTime = 0;
     private long threadPoolTime = 0;
     private long virtualThreadTime = 0;
@@ -160,16 +164,20 @@ public class ParallelFileProcessor {
         }
         
         // Verify file creation
-        long totalSize = Files.walk(workDir)
-            .filter(Files::isRegularFile)
-            .mapToLong(path -> {
-                try {
-                    return Files.size(path);
-                } catch (IOException e) {
-                    return 0;
-                }
-            })
-            .sum();
+        // [coach:fix] Files.walk returns a Stream that must be closed; wrapped in try-with-resources
+        long totalSize;
+        try (var paths = Files.walk(workDir)) {
+            totalSize = paths
+                .filter(Files::isRegularFile)
+                .mapToLong(path -> {
+                    try {
+                        return Files.size(path);
+                    } catch (IOException e) {
+                        return 0;
+                    }
+                })
+                .sum();
+        }
         
         System.out.printf("✅ Created %d test files (%d KB each, %.1f MB total)%n%n", 
             FILE_COUNT, FILE_SIZE_KB, totalSize / (1024.0 * 1024));
@@ -237,6 +245,7 @@ public class ParallelFileProcessor {
         System.out.println("   Processing files one at a time in a single thread");
         
         Instant start = Instant.now();
+        // [coach] AtomicLong is unnecessary here: single-threaded accumulation. Kept to preserve scope.
         AtomicLong totalBytes = new AtomicLong(0);
         AtomicLong totalWords = new AtomicLong(0);
         AtomicLong totalCharacters = new AtomicLong(0);
@@ -305,6 +314,7 @@ public class ParallelFileProcessor {
         AtomicLong totalWords = new AtomicLong(0);
         AtomicLong totalCharacters = new AtomicLong(0);
         
+        // [coach] ExecutorService is AutoCloseable on Java 19+; try-with-resources is correct for JDK 21
         try (ExecutorService executor = Executors.newFixedThreadPool(threadCount)) {
             List<Future<ProcessingResult>> futures = new ArrayList<>();
             
@@ -319,6 +329,7 @@ public class ParallelFileProcessor {
             }
             
             // Collect results as they complete
+            // [coach] Note: this iterates in submission order, not completion order; blocks on the first slow task
             System.out.println("   Collecting results from worker threads...");
             int completedCount = 0;
             for (Future<ProcessingResult> future : futures) {
@@ -485,8 +496,11 @@ public class ParallelFileProcessor {
                 long threadPoolTime = measureThreadPoolTime(fileCount);
                 long virtualThreadTime = measureVirtualThreadTime(fileCount);
                 
-                double threadPoolSpeedup = sequentialTime > 0 ? (double) sequentialTime / threadPoolTime : 1.0;
-                double virtualSpeedup = sequentialTime > 0 ? (double) sequentialTime / virtualThreadTime : 1.0;
+                // [coach] Guard against divide-by-zero on very fast runs (0 ms)
+                double threadPoolSpeedup = sequentialTime > 0 && threadPoolTime > 0 
+                    ? (double) sequentialTime / threadPoolTime : 1.0;
+                double virtualSpeedup = sequentialTime > 0 && virtualThreadTime > 0 
+                    ? (double) sequentialTime / virtualThreadTime : 1.0;
                 
                 System.out.printf("%-10d %-15d %-15d %-15d %-15.1fx %-15.1fx%n", 
                     fileCount, sequentialTime, threadPoolTime, virtualThreadTime, 
@@ -498,6 +512,7 @@ public class ParallelFileProcessor {
             }
         }
         
+        // [coach] These conclusions are NOT guaranteed; presented as expectations, not measurements
         System.out.println("\n📊 Scalability Analysis Summary:");
         System.out.println("   📈 Sequential: Predictable O(n) scaling, but single-threaded bottleneck");
         System.out.println("   🧵 Thread Pool: Good performance improvement, limited by thread count");
@@ -577,6 +592,7 @@ public class ParallelFileProcessor {
             
             // Calculate additional metrics for comprehensive analysis
             long lineCount = content.lines().count();
+            // [coach:fix] Named uniqueWordCount but computes total split length, not unique count
             int uniqueWordCount = content.toLowerCase()
                 .split("\\s+")
                 .length; // Simplified unique count for demo
@@ -707,15 +723,17 @@ public class ParallelFileProcessor {
         try {
             Path workDir = Path.of(WORK_DIR);
             if (Files.exists(workDir)) {
-                Files.walk(workDir)
-                    .sorted((a, b) -> -a.compareTo(b)) // Delete files before directories
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            // Ignore cleanup errors
-                        }
-                    });
+                // [coach:fix] Files.walk Stream must be closed; wrapped in try-with-resources
+                try (var paths = Files.walk(workDir)) {
+                    paths.sorted((a, b) -> -a.compareTo(b)) // Delete files before directories
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException e) {
+                                // Ignore cleanup errors
+                            }
+                        });
+                }
             }
             System.out.println("🧹 Cleaned up test files and working directory\n");
         } catch (IOException e) {
@@ -731,6 +749,7 @@ public class ParallelFileProcessor {
      * - Advanced metrics: line count, unique word count
      * - Metadata: file name for traceability
      */
+    // [coach] Could be a record under JDK 17+; kept as class to preserve scope/comments
     private static class ProcessingResult {
         final long byteCount;
         final int wordCount;

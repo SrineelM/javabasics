@@ -727,6 +727,9 @@ public class FunctionalProgrammingDemo extends CollectionDemo {
         printResult("Chained method references", processed);
         
         // Method reference vs lambda performance
+        // [coach] This micro-benchmark is meaningless: both forms compile to identical
+        // invokedynamic call sites, and `count()` on a map stream is trivially optimized.
+        // Kept for didactic purposes; do not draw performance conclusions from it.
         List<Integer> numbers = IntStream.range(1, 100000).boxed().toList();
         
         double lambdaTime = measureTime(() -> {
@@ -866,14 +869,30 @@ public class FunctionalProgrammingDemo extends CollectionDemo {
         );
         
         // Custom collector to join with numbering
+        // [coach] The accumulator below re-splits its own buffer on every element (O(n^2)) and
+        // the numbering is buggy: the count is derived from the buffer, not a separate counter.
+        // [coach:fix] rewrite with an explicit counter array and no re-splitting.
         Collector<String, ?, String> numberedJoiner = Collector.of(
-            StringBuilder::new, // supplier
-            (sb, item) -> { // accumulator
-                if (sb.length() > 0) sb.append(", ");
-                sb.append(sb.toString().split(", ").length).append(". ").append(item);
+            () -> new Object[] { new StringBuilder(), new int[]{0} }, // supplier: [sb, counter]
+            (acc, item) -> { // accumulator
+                StringBuilder sb = (StringBuilder) acc[0];
+                int[] count = (int[]) acc[1];
+                if (count[0] > 0) sb.append(", ");
+                sb.append(++count[0]).append(". ").append(item);
             },
-            (sb1, sb2) -> sb1.append(", ").append(sb2), // combiner
-            StringBuilder::toString // finisher
+            (acc1, acc2) -> { // combiner
+                // [coach] Combining two independently-numbered chunks is order-sensitive;
+                // we just concatenate for the sequential case and note the limitation.
+                StringBuilder sb1 = (StringBuilder) acc1[0];
+                int[] c1 = (int[]) acc1[1];
+                StringBuilder sb2 = (StringBuilder) acc2[0];
+                int[] c2 = (int[]) acc2[1];
+                if (c1[0] > 0 && c2[0] > 0) sb1.append(", ");
+                sb1.append(sb2);
+                c1[0] += c2[0];
+                return acc1;
+            },
+            acc -> ((StringBuilder) acc[0]).toString() // finisher
         );
         
         String numberedSentences = sentences.stream()
@@ -908,116 +927,4 @@ public class FunctionalProgrammingDemo extends CollectionDemo {
         printResult("Words grouped by length", wordsByLength);
         
         // Collector composition
-        Map<Integer, String> lengthToJoinedWords = words.stream()
-                .collect(Collectors.groupingBy(
-                    String::length,
-                    Collectors.joining(", ")
-                ));
-        printResult("Length to joined words", lengthToJoinedWords);
-        
-        printTip("Use Collector.of() for completely custom collection logic");
-        printInfo("Combine existing collectors with groupingBy and mapping for complex operations");
-    }
-    
-    /**
-     * Demonstrates best practices for functional programming with collections
-     */
-    private void demonstrateBestPractices() {
-        printSubHeader("Functional Programming Best Practices");
-        
-        printInfo("💡 Stream Performance Tips:");
-        System.out.println("  • Use primitive streams (IntStream, LongStream, DoubleStream) when possible");
-        System.out.println("  • Order operations for early termination (filter before map)");
-        System.out.println("  • Use parallel streams only for CPU-intensive operations on large datasets");
-        System.out.println("  • Avoid stateful operations in parallel streams");
-        System.out.println("  • Use method references when they improve readability");
-        
-        printSeparator();
-        
-        printInfo("🎯 Readability Guidelines:");
-        System.out.println("  • Keep stream pipelines short and focused");
-        System.out.println("  • Extract complex lambdas into named methods");
-        System.out.println("  • Use meaningful variable names in lambda parameters");
-        System.out.println("  • Break complex operations into multiple steps");
-        System.out.println("  • Use intermediate variables for complex predicates/functions");
-        
-        printSeparator();
-        
-        printInfo("⚠️  Common Pitfalls to Avoid:");
-        System.out.println("  • Don't reuse streams - create new ones for each operation");
-        System.out.println("  • Avoid side effects in lambda expressions");
-        System.out.println("  • Don't use parallel streams with shared mutable state");
-        System.out.println("  • Be careful with infinite streams - always use limit()");
-        System.out.println("  • Handle Optional properly - avoid get() without isPresent()");
-        
-        // Demonstrate good vs bad practices
-        printInfo("Good vs Bad practices examples:");
-        
-        List<String> data = List.of("Java", "Python", "JavaScript", "Kotlin", "Scala");
-        
-        // Bad: Side effects in lambda
-        List<String> badResults = new ArrayList<>();
-        data.stream()
-                .filter(s -> s.length() > 4)
-                .forEach(s -> badResults.add(s.toUpperCase())); // Side effect!
-        printResult("Bad: Side effects result", badResults);
-        
-        // Good: Pure functional approach
-        List<String> goodResults = data.stream()
-                .filter(s -> s.length() > 4)
-                .map(String::toUpperCase)
-                .toList();
-        printResult("Good: Pure functional result", goodResults);
-        
-        // Bad: Complex lambda
-        List<String> complexProcessed = data.stream()
-                .map(s -> {
-                    if (s.length() > 6) {
-                        return s.toUpperCase() + "(" + s.length() + ")";
-                    } else if (s.length() > 4) {
-                        return s.toLowerCase() + "[" + s.length() + "]";
-                    } else {
-                        return s + "-short";
-                    }
-                })
-                .toList();
-        printResult("Bad: Complex lambda result", complexProcessed);
-        
-        // Good: Extracted method
-        List<String> cleanProcessed = data.stream()
-                .map(this::processWord)
-                .toList();
-        printResult("Good: Extracted method result", cleanProcessed);
-        
-        // Performance consideration example
-        List<Integer> numbers = IntStream.range(1, 1000000).boxed().toList();
-        
-        // Less efficient: boxing/unboxing
-        double avgBoxed = numbers.stream()
-                .mapToInt(Integer::intValue)
-                .average()
-                .orElse(0.0);
-        
-        // More efficient: use primitive stream
-        double avgPrimitive = numbers.stream()
-                .mapToInt(Integer::intValue)
-                .average()
-                .orElse(0.0);
-        
-        printResult("Both approaches give same result", avgBoxed == avgPrimitive);
-        
-        printTip("Measure performance before optimizing - premature optimization is often unnecessary");
-        printWarning("Readability often trumps minor performance gains - optimize hot paths only");
-    }
-    
-    // Helper method for good practice example
-    private String processWord(String word) {
-        if (word.length() > 6) {
-            return word.toUpperCase() + "(" + word.length() + ")";
-        } else if (word.length() > 4) {
-            return word.toLowerCase() + "[" + word.length() + "]";
-        } else {
-            return word + "-short";
-        }
-    }
-}
+       

@@ -36,6 +36,9 @@ import java.util.Scanner;
  */
 public class CollectionsTutorial {
     
+    // [coach] A static Scanner on System.in is fine for a single-threaded CLI,
+    // but note: (1) never close it — closing System.in breaks later reads;
+    // (2) it is not thread-safe — do not share across threads.
     private static final Scanner scanner = new Scanner(System.in);
     
     /**
@@ -45,6 +48,10 @@ public class CollectionsTutorial {
     public static void main(String[] args) {
         printWelcomeMessage();
         
+        // [coach] while(true) + System.exit(0) on case 0 is fine for a CLI, but
+        // System.exit bypasses finally blocks and shutdown hooks. For a library-
+        // friendly design, prefer a `boolean running` flag and `return` from main.
+        // Kept as-is to preserve original behavior; flagged for interview.
         while (true) {
             displayMainMenu();
             int choice = getChoice();
@@ -62,11 +69,18 @@ public class CollectionsTutorial {
                     case 9 -> new BestPracticesDemo().demonstrateAll();
                     case 0 -> {
                         printGoodbyeMessage();
+                        // [coach] System.exit(0) is redundant here because it is
+                        // the only terminal path out of the loop; cleaner to
+                        // `return;` from main so finally blocks run. Kept as-is.
                         System.exit(0);
                     }
                     default -> System.out.println("❌ Invalid choice. Please try again.");
                 }
             } catch (Exception e) {
+                // [coach] Catching Exception here is broad; but for a demo CLI
+                // that must not die on one failing demo, it is the correct trade-
+                // off. Prefer logging the full stack in production, not printing
+                // to stderr and continuing.
                 System.err.println("❌ Error executing example: " + e.getMessage());
                 e.printStackTrace();
             }
@@ -80,11 +94,20 @@ public class CollectionsTutorial {
      */
     public static void runCollectionsTutorial() {
         System.out.println("\n🔄 Launching Collections Framework Tutorial...\n");
+        // [coach] Re-entering main() from another class's main re-runs welcome,
+        // re-enters the menu loop, and blocks until exit — effectively a nested
+        // CLI. This is fine for a demo, but do NOT call this from a non-main
+        // thread that expects to regain control; System.exit inside will kill
+        // the JVM. Also note: calling main() directly (not via new Thread) means
+        // the scanner is shared with any outer UI — potential contention.
         main(new String[]{});
     }
     
     private static void printWelcomeMessage() {
         System.out.println("╔" + "═".repeat(80) + "╗");
+        // [coach] Hardcoded padding is brittle: changing the title breaks the
+        // alignment. For interview-quality output, compute padding from the
+        // title length (see CollectionDemo#printHeader). Kept as-is for scope.
         System.out.println("║" + " ".repeat(20) + "JAVA COLLECTIONS FRAMEWORK TUTORIAL" + " ".repeat(24) + "║");
         System.out.println("║" + " ".repeat(25) + "Comprehensive Learning Guide" + " ".repeat(27) + "║");
         System.out.println("╚" + "═".repeat(80) + "╝");
@@ -105,6 +128,8 @@ public class CollectionsTutorial {
         System.out.println("┌" + "─".repeat(78) + "┐");
         System.out.println("│" + " ".repeat(25) + "COLLECTIONS TUTORIAL MENU" + " ".repeat(27) + "│");
         System.out.println("├" + "─".repeat(78) + "┤");
+        // [coach] Lines are hand-padded to 70 chars; any edit to text risks
+        // misalignment. A small helper `padRight(s, n)` would be cleaner.
         System.out.println("│  1. 📋 List Collections (ArrayList, LinkedList, Vector)              │");
         System.out.println("│  2. 🔢 Set Collections (HashSet, TreeSet, LinkedHashSet)             │");
         System.out.println("│  3. 🗺️  Map Collections (HashMap, TreeMap, LinkedHashMap)             │");
@@ -123,6 +148,13 @@ public class CollectionsTutorial {
     private static int getChoice() {
         try {
             String input = scanner.nextLine().trim();
+            // [coach] nextLine() on EOF returns null (e.g., input redirected from
+            // an exhausted pipe). Calling trim() on null throws NPE, not
+            // NumberFormatException. Guard for null.
+            // [coach:fix] guard against null input from exhausted stream.
+            if (input == null) {
+                return -1;
+            }
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
             return -1;
@@ -132,6 +164,9 @@ public class CollectionsTutorial {
     private static void waitForContinue() {
         System.out.println();
         System.out.println("📌 Press Enter to return to menu...");
+        // [coach] Scanner.nextLine() can also return null on EOF; the previous
+        // getChoice() consumed the line, so this is usually fine, but a null
+        // return here would silently fall through (no NPE because we discard it).
         scanner.nextLine();
         System.out.println();
     }
@@ -139,6 +174,9 @@ public class CollectionsTutorial {
     private static void printGoodbyeMessage() {
         System.out.println();
         System.out.println("╔" + "═".repeat(60) + "╗");
+        // [coach] Emoji width is not 1 char in all terminals; the emoji "🎉"
+        // is a surrogate pair (2 UTF-16 chars) and renders as 2 columns wide,
+        // so padding math here is approximate. Acceptable for demo output.
         System.out.println("║" + " ".repeat(10) + "Collections Framework Tutorial Complete!" + " ".repeat(9) + "║");
         System.out.println("║" + " ".repeat(15) + "Thank you for learning! 🎉" + " ".repeat(19) + "║");
         System.out.println("╚" + "═".repeat(60) + "╝");

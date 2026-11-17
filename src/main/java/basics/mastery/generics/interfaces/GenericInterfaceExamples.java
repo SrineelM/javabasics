@@ -1,4 +1,3 @@
-
 package basics.mastery.generics.interfaces;
 import java.util.ArrayList;
 import java.util.Collection;

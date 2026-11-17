@@ -41,6 +41,12 @@ import basics.mastery.collections.CollectionDemo;
  * 
  * @author Srineel with Copilot
  * @since Java 21
+ *
+ * [coach] Benchmark caveat: this class is NOT a JMH benchmark. No warmup,
+ * no fork isolation, single JVM, no statistical validation, and timing is
+ * contaminated by GC and JIT tier transitions. Treat all printed numbers
+ * as illustrative only. For real measurements, use JMH with @Benchmark,
+ * @Warmup, @Fork, and Blackhole.consume.
  */
 public class PerformanceAnalysisDemo extends CollectionDemo {
 
@@ -96,6 +102,8 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         printTip("ArrayList: O(1) random access, O(n) insertion/deletion in middle");
         printTip("LinkedList: O(1) insertion/deletion at ends, O(n) random access");
         printWarning("Vector is legacy - use ArrayList with Collections.synchronizedList() instead");
+        // [coach] Note: Vector locks on every public method, and its iterator
+        // does not lock by default; iteration still needs external sync.
     }
 
     /**
@@ -284,6 +292,10 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         printInfo("Comparing memory footprint of different collections");
         
+        // [coach] getHeapMemoryUsage() is a coarse JVM-wide counter; the deltas
+        // below are contaminated by other allocations, GC timing, and JIT code
+        // caches. For accurate per-collection footprint use JOL (Java Object Layout).
+        
         // Memory usage before creating collections
         long beforeMemory = getUsedMemory(memoryBean);
         
@@ -374,7 +386,7 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         System.out.printf("  Without initial capacity: %s%n", formatTime(timeWithoutCapacity));
         System.out.printf("  With initial capacity: %s%n", formatTime(timeWithCapacity));
-    System.out.printf("  Improvement: %.2fx%n", timeWithoutCapacity / timeWithCapacity);
+        System.out.printf("  Improvement: %.2fx%n", timeWithoutCapacity / timeWithCapacity);
     }
 
     /**
@@ -394,6 +406,8 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         });
         
         // Bulk add operation
+        // [coach] For an ArrayList, addAll pre-sizes to (size + c.size()) and does
+        // a single array copy — O(n) vs O(n) with resizes in the loop version.
         double bulkTime = measureTime(() -> {
             List<Integer> target = new ArrayList<>();
             target.addAll(sourceList);
@@ -401,7 +415,7 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         System.out.printf("  Individual add operations: %s%n", formatTime(individualTime));
         System.out.printf("  Bulk addAll operation: %s%n", formatTime(bulkTime));
-    System.out.printf("  Improvement: %.2fx%n", individualTime / bulkTime);
+        System.out.printf("  Improvement: %.2fx%n", individualTime / bulkTime);
     }
 
     /**
@@ -432,7 +446,10 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         
         System.out.printf("  ArrayList contains (1000 ops): %s%n", formatTime(listContainsTime));
         System.out.printf("  HashSet contains (1000 ops): %s%n", formatTime(setContainsTime));
-    System.out.printf("  HashSet is %.2fx faster%n", listContainsTime / setContainsTime);
+        System.out.printf("  HashSet is %.2fx faster%n", listContainsTime / setContainsTime);
+        // [coach] Complexity: ArrayList.contains is O(n) with equals per element;
+        // HashSet.contains is O(1) average (hash + equals on the bucket chain).
+        // At SMALL_SIZE=1000 the gap is already ~1-2 orders of magnitude.
     }
 
     /**
@@ -519,6 +536,10 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         System.out.printf("  ConcurrentHashMap (%d threads): %s%n", numThreads, formatTime(concurrentTime));
         System.out.printf("  Synchronized HashMap (%d threads): %s%n", numThreads, formatTime(syncTime));
         System.out.printf("  ConcurrentHashMap is %.2fx faster%n", (double) syncTime / concurrentTime);
+        // [coach] Keys are disjoint per thread (threadId * ops + j), so these are
+        // insert-only workloads. Real-world contention would come from shared keys;
+        // CHM would then use per-bin CAS/locks, whereas synchronizedMap serializes
+        // everything on one monitor.
     }
 
     /**
@@ -553,6 +574,9 @@ public class PerformanceAnalysisDemo extends CollectionDemo {
         }
         
         long endTime = System.nanoTime();
+        // [coach] shutdown() doesn't wait; use try-with-resources on ExecutorService
+        // (Java 19+ implements AutoCloseable and awaits termination) or shutdownNow
+        // + awaitTermination to avoid leaked worker threads across runs.
         executor.shutdown();
         
         return endTime - startTime;

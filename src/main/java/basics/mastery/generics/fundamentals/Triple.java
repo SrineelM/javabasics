@@ -1,7 +1,11 @@
 package basics.mastery.generics.fundamentals;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Generic triple demonstrating three type parameters and complex generic relationships.
@@ -19,6 +23,8 @@ import java.util.function.Function;
  * @author Srineel with Copilot
  * @version 1.0
  */
+// [coach] No stray "// ...existing code..." and no duplicate class Javadoc. Structural fix limited to
+// imports for the fully-qualified references (Arrays, List, Predicate, Stream) — pure style.
 public final class Triple<A, B, C> {
     private final A first;
     private final B second;
@@ -56,6 +62,8 @@ public final class Triple<A, B, C> {
      * @param thirdBox Box containing the third element
      * @return Triple if all boxes have values, null otherwise
      */
+    // [coach:fix] Same factory-null issue as Pair.fromBoxes: a factory should not return null.
+    // Preferred: Optional<Triple<A,B,C>> or a Box/Triple wrapper. Kept for scope; flagged.
     public static <A, B, C> Triple<A, B, C> fromBoxes(Box<A> firstBox, Box<B> secondBox, Box<C> thirdBox) {
         if (firstBox.isPresent() && secondBox.isPresent() && thirdBox.isPresent()) {
             return Triple.of(firstBox.get(), secondBox.get(), thirdBox.get());
@@ -193,6 +201,8 @@ public final class Triple<A, B, C> {
      * @param combiner the combining function
      * @return the combined result
      */
+    // [coach] Uses the file's own TriFunction, which extends the BiFunction idea to 3 args.
+    // Signature has PECS on the input side (? super) and covariance on the output (? extends) — good.
     public <R> R combine(TriFunction<? super A, ? super B, ? super C, ? extends R> combiner) {
         return combiner.apply(first, second, third);
     }
@@ -240,8 +250,8 @@ public final class Triple<A, B, C> {
      * 
      * @return a stream containing all elements as Objects
      */
-    public java.util.stream.Stream<Object> stream() {
-        return java.util.stream.Stream.of(first, second, third);
+    public Stream<Object> stream() {
+        return Stream.of(first, second, third);
     }
     
     /**
@@ -252,9 +262,9 @@ public final class Triple<A, B, C> {
      * @param thirdPredicate predicate for the third element
      * @return true if all predicates pass
      */
-    public boolean matchesAll(java.util.function.Predicate<? super A> firstPredicate,
-                             java.util.function.Predicate<? super B> secondPredicate,
-                             java.util.function.Predicate<? super C> thirdPredicate) {
+    public boolean matchesAll(Predicate<? super A> firstPredicate,
+                             Predicate<? super B> secondPredicate,
+                             Predicate<? super C> thirdPredicate) {
         return firstPredicate.test(first) && 
                secondPredicate.test(second) && 
                thirdPredicate.test(third);
@@ -270,10 +280,13 @@ public final class Triple<A, B, C> {
      * @param thirdMapper mapper for the third element
      * @return a list containing the mapped results
      */
-    public <R> java.util.List<R> mapToList(Function<? super A, ? extends R> firstMapper,
+    // [coach] Arrays.asList returns a fixed-size, backed-by-array list. Mutating it (add/remove) throws.
+    // List.of(...) on JDK 9+ is clearer about immutability; both are appropriate here since the
+    // method promises nothing about mutability.
+    public <R> List<R> mapToList(Function<? super A, ? extends R> firstMapper,
                                           Function<? super B, ? extends R> secondMapper,
                                           Function<? super C, ? extends R> thirdMapper) {
-        return java.util.Arrays.asList(
+        return Arrays.asList(
             firstMapper.apply(first),
             secondMapper.apply(second),
             thirdMapper.apply(third)
@@ -328,6 +341,7 @@ public final class Triple<A, B, C> {
          * @param after the function to apply after this one
          * @return a composed function
          */
+        // [coach] Matches the BiFunction.andThen pattern. Correctly requires non-null.
         default <S> TriFunction<T, U, V, S> andThen(Function<? super R, ? extends S> after) {
             Objects.requireNonNull(after);
             return (t, u, v) -> after.apply(apply(t, u, v));
@@ -360,6 +374,8 @@ public final class Triple<A, B, C> {
      * @param third the third value
      * @return a new Triple
      */
+    // [coach] This is functionally identical to of(...). Kept because the name conveys intent
+    // ("zipping three separate values") — but interviewers may ask "why both of and zip?".
     public static <A, B, C> Triple<A, B, C> zip(A first, B second, C third) {
         return Triple.of(first, second, third);
     }

@@ -45,9 +45,12 @@ public class GenericCollectionExamples {
      * @param elements elements to include
      * @return new ArrayList containing elements
      */
+    // [coach] @SafeVarargs applies to the varargs heap-pollution warning; @SuppressWarnings("varargs")
+    // is what the JDK itself does when @SafeVarargs is present — harmless here.
     @SafeVarargs
     @SuppressWarnings("varargs")
     public static <T> List<T> listOf(T... elements) {
+        // [coach] List.of(elements) (JDK 9+) would be immutable; we intentionally return mutable.
         return new ArrayList<>(Arrays.asList(elements));
     }
     
@@ -72,6 +75,8 @@ public class GenericCollectionExamples {
      * @param entries key-value pairs
      * @return new HashMap containing entries
      */
+    // [coach] No @SafeVarargs needed here because the element type is Map.Entry<K,V>,
+    // a reifiable-enough type (no unchecked array creation for the caller).
     @SafeVarargs
     public static <K, V> Map<K, V> mapOf(Map.Entry<K, V>... entries) {
         Map<K, V> map = new HashMap<>();
@@ -221,6 +226,7 @@ public class GenericCollectionExamples {
      * @param <T> element type
      */
     public static class CircularBuffer<T> implements Iterable<T> {
+        // [coach] Object[] is required — you cannot create T[]. Cast happens on read via (T).
         private final Object[] buffer;
         private final int capacity;
         private int head = 0;
@@ -323,6 +329,9 @@ public class GenericCollectionExamples {
             return new CircularBufferIterator();
         }
         
+        // [coach] Iterator snapshot semantics: if the buffer mutates during iteration,
+        // the iterator may skip or repeat elements. Documented behavior, not a bug —
+        // but interviewers will ask "is this iterator fail-fast?"; answer is no.
         private class CircularBufferIterator implements Iterator<T> {
             private int currentIndex = 0;
             
@@ -439,6 +448,8 @@ public class GenericCollectionExamples {
             return current;
         }
         
+        // [coach] prefix + entry.getKey() creates a new String per node — O(depth) per step,
+        // so total cost O(nodes * depth). Fine for a teaching trie; StringBuilder would save allocs.
         private void collectKeys(TrieNode<V> node, String prefix, List<String> result) {
             if (node.isEndOfWord) {
                 result.add(prefix);
@@ -474,6 +485,10 @@ public class GenericCollectionExamples {
      * @param <K> key type
      * @param <V> value type
      */
+    // [coach] This implementation is NOT correctly thread-safe. The map is CHM but
+    // the linked list is guarded by `lock`, while `get` reads node.value outside the lock.
+    // Two simultaneous puts to the same key can race; and get/put can race on the recency list.
+    // See FEEDBACK for details. Kept structurally intact per "additive only" rule.
     public static class ConcurrentLRUCache<K, V> {
         private final int maxSize;
         private final ConcurrentHashMap<K, Node<K, V>> cache;
@@ -516,6 +531,9 @@ public class GenericCollectionExamples {
          * @param value the value
          * @return the previous value, or null
          */
+        // [coach:fix] The "existing vs new" branch is racy: two threads can both see existing==null
+        // and both insert a fresh Node, leaving one orphaned in the linked list.
+        // A correct version uses cache.compute(...) or a per-key lock. Not applied — see FEEDBACK.
         public V put(K key, V value) {
             Node<K, V> existing = cache.get(key);
             
@@ -640,6 +658,7 @@ public class GenericCollectionExamples {
         int high = list.size() - 1;
         
         while (low <= high) {
+            // [coach] Unsigned shift avoids int overflow vs (low + high) / 2 — same trick as Arrays.binarySearch.
             int mid = (low + high) >>> 1;
             T midVal = list.get(mid);
             int cmp = comparator.compare(midVal, key);
@@ -664,6 +683,9 @@ public class GenericCollectionExamples {
      * @param comparator comparison function
      * @return merged sorted list
      */
+    // [coach:fix] Bug: using `null` as the end-of-iterator sentinel breaks on collections
+    // that legitimately contain null. Also NPEs if the comparator dereferences null.
+    // A safe version tracks "has more" booleans. Not applied — see FEEDBACK.
     public static <T> List<T> merge(Collection<? extends T> first, 
                                     Collection<? extends T> second, 
                                     Comparator<? super T> comparator) {
@@ -705,6 +727,8 @@ public class GenericCollectionExamples {
      * @param <T> first element type
      * @param <U> second element type
      */
+    // [coach] Candidate for a record on JDK 17+: `record Pair<T, U>(T first, U second) {}`
+    // would replace both constructors, getters, equals, and hashCode. Kept as class per scope.
     public static class Pair<T, U> {
         private final T first;
         private final U second;
